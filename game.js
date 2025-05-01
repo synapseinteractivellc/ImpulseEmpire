@@ -61,6 +61,71 @@ function newGame() {
                 production: 0,  // Set initial production to 0
                 costMultiplier: 1.15
             },
+            {
+                id: 'synapse_junction',
+                name: 'Synapse Junction',
+                description: 'Specialized junction between neurons that improves signal transmission',
+                baseDescription: 'Generates 15 impulse energy per second',
+                buildingDescription: 'Generates 15 impulse energy per second',
+                baseCost: 10000,
+                cost: 10000,
+                count: 0,
+                baseProduction: 15,
+                production: 0,  // Set initial production to 0
+                costMultiplier: 1.15
+            },
+            {
+                id: 'glial_cell_network',
+                name: 'Glial Cell Network',
+                description: 'Support cells that maintain neural health and enhance efficiency',
+                baseDescription: 'Generates 40 impulse energy per second',
+                buildingDescription: 'Generates 40 impulse energy per second',
+                baseCost: 50000,
+                cost: 50000,
+                count: 0,
+                baseProduction: 40,
+                production: 0,  // Set initial production to 0
+                costMultiplier: 1.15
+            },
+            {
+                id: 'neural_oscillator',
+                name: 'Neural Oscillator',
+                description: 'Creates rhythmic impulse patterns for enhanced energy generation',
+                baseDescription: 'Generates 250 impulse energy per second',
+                buildingDescription: 'Generates 250 impulse energy per second',
+                baseCost: 120000,
+                cost: 120000,
+                count: 0,
+                baseProduction: 250,
+                production: 0,  // Set initial production to 0
+                costMultiplier: 1.15
+            },
+            {
+                id: 'cortical_column',
+                name: 'Cortical Column ',
+                description: 'A complex arrangement of neurons forming a functional unit',
+                baseDescription: 'Generates 250 impulse energy per second',
+                buildingDescription: 'Generates 250 impulse energy per second',
+                baseCost: 1000000,
+                cost: 1000000,
+                count: 0,
+                baseProduction: 500,
+                production: 0,  // Set initial production to 0
+                costMultiplier: 1.15
+            },
+            {
+                id: 'thalamic_relay',
+                name: 'Thalamic Relay',
+                description: 'Routes and amplifies signals through major neural pathways',
+                baseDescription: 'Generates 2,000 impulse energy per second',
+                buildingDescription: 'Generates 2,000 impulse energy per second',
+                baseCost: 5000000,
+                cost: 5000000,
+                count: 0,
+                baseProduction: 2000,
+                production: 0,  // Set initial production to 0
+                costMultiplier: 1.15
+            },
         ],
         upgrades: [
             {
