@@ -1,0 +1,201 @@
+/* Achievement styles */
+
+/* Achievements Tab Content */
+.achievements-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.achievements-summary {
+    background-color: #1a1a2e;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: #00ffff;
+}
+
+.achievement {
+    background-color: #1a1a2e;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: transform 0.2s;
+    border: 1px solid #252547;
+    opacity: 0.7;
+}
+
+.achievement.achieved {
+    border: 1px solid #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    opacity: 1;
+}
+
+.achievement:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+}
+
+.achievement-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.achievement-icon {
+    font-size: 1.8rem;
+    margin-right: 15px;
+    background: linear-gradient(to bottom, #8a2be2, #4b0082);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+}
+
+.achievement.achieved .achievement-icon {
+    background: linear-gradient(to bottom, #00ffff, #0088ff);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+}
+
+.achievement-title {
+    flex: 1;
+}
+
+.achievement-name {
+    font-size: 1.1rem;
+    color: #00ffff;
+    margin-bottom: 5px;
+}
+
+.achievement-description {
+    font-size: 0.9rem;
+    color: #cccccc;
+}
+
+.achievement-footer {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.achievement-progress-text {
+    font-size: 0.85rem;
+    color: #aaaaaa;
+    margin-bottom: 5px;
+    text-align: right;
+}
+
+.achievement-progress-bar {
+    width: 100%;
+    height: 5px;
+    background-color: #252547;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.achievement-progress {
+    height: 100%;
+    background: linear-gradient(to right, #8a2be2, #00ffff);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+}
+
+.achievement.achieved .achievement-progress {
+    background: linear-gradient(to right, #00ffff, #00ff7f);
+}
+
+.achievement-reward {
+    font-size: 0.85rem;
+    color: #ff7f50;
+    text-align: right;
+    margin-top: 5px;
+}
+
+/* Achievement Notification */
+.achievement-notification {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: linear-gradient(to right, #1a1a2e, #252547);
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+    border: 1px solid #00ffff;
+    z-index: 2000;
+    animation: slide-in 0.5s ease-out, glow 2s infinite alternate;
+    max-width: 350px;
+}
+
+.achievement-notification .achievement-icon {
+    font-size: 2rem;
+    background: linear-gradient(to bottom, #00ffff, #0088ff);
+    min-width: 50px;
+    height: 50px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+}
+
+.achievement-notification .achievement-info {
+    margin-left: 15px;
+}
+
+.achievement-notification .achievement-name {
+    font-size: 1rem;
+    color: #00ffff;
+    margin-bottom: 5px;
+}
+
+.achievement-notification .achievement-description {
+    font-size: 0.85rem;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.achievement-notification .achievement-reward {
+    font-size: 0.85rem;
+    color: #ff7f50;
+    text-align: left;
+}
+
+.achievement-fadeout {
+    animation: fade-out 0.5s forwards;
+}
+
+@keyframes slide-in {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+    }
+}

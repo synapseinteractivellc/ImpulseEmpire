@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Impulse Empire</title>
-    <link rel="stylesheet" href="./main.css">    
+    <link rel="stylesheet" href="./main.css">
+    <link rel="stylesheet" href="./achievements.css">
 </head>
 <body>
     <div class="container">
@@ -31,6 +32,7 @@
         <div class="tab-container">
             <div class="tab active" onclick="openTab('buildings')">Neurons</div>
             <div class="tab" onclick="openTab('upgrades')">Upgrades</div>
+            <div class="tab" onclick="openTab('achievements')">Achievements</div>
             <div class="tab" onclick="openTab('stats')">Stats</div>
         </div>
 
@@ -54,12 +56,20 @@
             </div>
         </div>
 
+        <div id="achievements" class="tab-content">
+            <h2>Neural Achievements</h2>
+            <div class="achievements-container" id="achievements-container">
+                <!-- Achievements will be added here by JavaScript -->
+            </div>
+        </div>
+
         <div id="stats" class="tab-content">
             <h2>Neural Stats</h2>
             <div>
                 <p>Total Impulse Energy Generated: <span id="total-energy">0</span></p>
                 <p>Total Clicks: <span id="total-clicks">0</span></p>
                 <p>Play Time: <span id="play-time">0</span> seconds</p>
+                <p>Achievements Unlocked: <span id="achievements-unlocked">0</span></p>
             </div>
         </div>
 
@@ -69,5 +79,6 @@
         </footer>
     </div>
     <script src="./game.js"></script>
+    <script src="./achievements.js"></script>
 </body>
 </html>

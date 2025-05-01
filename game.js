@@ -611,6 +611,9 @@ function newGame() {
             }
         ]
     };
+
+    // Initialize the achievements system
+    initAchievements();
     
     // Make sure to calculate energy per second
     calculateEnergyPerSecond();
@@ -634,6 +637,7 @@ function initGame() {
     tutorialSeen();
     renderBuildings();
     renderUpgrades();
+    renderAchievements();
     updateDisplay();
     startGameLoop();
 
@@ -661,6 +665,9 @@ function startGameLoop() {
         
         // Check for new unlocks
         updateVisibility();
+
+        // Check for achievements
+        checkAchievements();
         
         updateDisplay();
         saveGame();
@@ -687,6 +694,9 @@ function calculateOfflineProgress() {
     gameState.totalEnergy += offlineProduction;
     gameState.playTime += cappedTime;
     gameState.lastUpdate = now;
+
+    // Check for achievements
+    checkAchievements();
     
     // Show the welcome back modal
     showOfflineProgressModal(offlineProduction, cappedTime);
@@ -775,6 +785,9 @@ function clickImpulse() {
         floatingText.remove();
     }, 2000);
     
+    // Check for achievements
+    checkAchievements();
+
     updateVisibility(); // Check for new buildings/upgrades to show
     updateDisplay();
 }
@@ -832,6 +845,9 @@ function purchaseBuilding(buildingId) {
         
         // Apply any special building effects
         calculateBuildingEffects();
+
+        // Check for achievements
+        checkAchievements();
         
         updateVisibility(); // Check for new buildings/upgrades to show
         renderBuildings();
@@ -854,6 +870,9 @@ function purchaseUpgrade(upgradeId) {
         gameState.energy -= upgrade.cost;
         upgrade.purchased = true;
         upgrade.effect();
+
+        // Check for achievements
+        checkAchievements();
         
         updateVisibility(); // Check for new buildings/upgrades to show
         renderUpgrades();
@@ -940,6 +959,14 @@ function updateDisplay() {
     document.getElementById('total-energy').textContent = formatNumber(gameState.totalEnergy);
     document.getElementById('total-clicks').textContent = gameState.totalClicks;
     document.getElementById('play-time').textContent = formatNumber(gameState.playTime);
+
+    // Update achievements count in stats
+    if (gameState.achievements) {
+        const achievementsUnlocked = document.getElementById('achievements-unlocked');
+        if (achievementsUnlocked) {
+            achievementsUnlocked.textContent = `${gameState.achievements.totalAchieved}/${gameState.achievements.list.length}`;
+        }
+    }
     
     // Update buildings that can be afforded
     const buildingElements = document.querySelectorAll('.building');
@@ -1051,7 +1078,15 @@ function saveGame() {
             id: u.id,
             purchased: u.purchased,
             visible: u.visible // Save visibility status
-        }))
+        })),
+        achievements: gameState.achievements ? {
+            totalAchieved: gameState.achievements.totalAchieved,
+            list: gameState.achievements.list.map(a => ({
+                id: a.id,
+                achieved: a.achieved,
+                progress: a.progress
+            }))
+        } : null
     };
     
     localStorage.setItem('impulseEmpire', JSON.stringify(saveData));
@@ -1095,6 +1130,21 @@ function loadGame() {
                 }
             });
         }
+
+        // Load achievement data
+        if (parsedData.achievements && gameState.achievements) {
+            gameState.achievements.totalAchieved = parsedData.achievements.totalAchieved || 0;
+            
+            if (parsedData.achievements.list) {
+                parsedData.achievements.list.forEach(savedAchievement => {
+                    const achievement = gameState.achievements.list.find(a => a.id === savedAchievement.id);
+                    if (achievement) {
+                        achievement.achieved = savedAchievement.achieved || false;
+                        achievement.progress = savedAchievement.progress || 0;
+                    }
+                });
+            }
+        }
         
         calculateEnergyPerSecond();
         tutorialSeen();
@@ -1115,6 +1165,7 @@ function resetGame() {
         calculateEnergyPerSecond();
         renderBuildings();
         renderUpgrades();
+        renderAchievements();
         updateDisplay();
         tutorialSeen();
     }
@@ -1140,6 +1191,12 @@ function openTab(tabName) {
         if (tabButtons[i].textContent.toLowerCase().includes(tabName.toLowerCase())) {
             tabButtons[i].classList.add('active');
         }
+    }
+    
+    // If switching to achievements tab, check and render achievements
+    if (tabName === 'achievements') {
+        checkAchievements();
+        renderAchievements();
     }
 }
 
