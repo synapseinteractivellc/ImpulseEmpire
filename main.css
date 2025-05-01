@@ -143,7 +143,7 @@ header {
     color: #ff7f50;
 }
 
-.building-base-production-description {    
+.building-current-production-description {    
     margin-left: 25%;
     text-align: right;
     font-size: 0.9rem;
@@ -156,15 +156,26 @@ header {
     margin-left: 15px;
 }
 
-.building-description-tooltip,
-.building-current-production-description-tooltip {
+
+.building-tooltip {
+    position: absolute;
+    top: -10px;
+    left: 60%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
     visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    border: 1px solid #000;
+    z-index: 1000;
 }
 
-.building-description-tooltip,
-.building-current-production-description-tooltip :hover{
-    font-size: 0.9rem;
-    color: #2dda2d;
+.building:hover .building-tooltip {
+    opacity: 1;
     visibility: visible;
 }
 

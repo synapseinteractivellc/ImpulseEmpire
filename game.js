@@ -310,11 +310,13 @@ function renderBuildings() {
             <div class="building-info">
                 <div class="building-name">${building.name}</div>              
                 <span class="building-cost">Cost: ${Math.floor(building.cost)} Impulse Energy</span>
-                <span class="building-base-production-description">${dynamicBuildingDescription}</span>
+                <span class="building-current-production-description">${dynamicBuildingDescription}</span>
             </div>
             <div class="building-count">${building.count}</div>
-            <div class="building-description-tooltip">${building.description}</div>
-            <div class="building-current-production-description-tooltip">${dynamicDescription}</div>
+            <div class="building-tooltip>
+                <span class="building-description-tooltip">${building.description}</span><br>
+                <span class="building-base-production-description-tooltip">${dynamicDescription}</span>
+            </div>
         `;
         
         element.addEventListener('click', () => purchaseBuilding(building.id));
