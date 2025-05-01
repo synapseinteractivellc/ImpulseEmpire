@@ -175,6 +175,315 @@ function newGame() {
                 requirement: function() {
                     return gameState.buildings.find(b => b.id === 'dendrite').count >= 10;
                 }
+            },
+            // Add these new upgrades to your gameState.upgrades array
+            {
+                id: 'neural-plasticity',
+                name: 'Neural Plasticity',
+                description: 'All buildings produce 25% more energy',
+                cost: 1000,
+                purchased: false,
+                effect: function() {
+                    // Apply 25% boost to all buildings
+                    gameState.buildings.forEach(building => {
+                        building.baseProduction *= 1.25;
+                    });
+                    calculateEnergyPerSecond();
+                },
+                requirement: function() {
+                    // Count total buildings
+                    const totalBuildings = gameState.buildings.reduce((total, building) => total + building.count, 0);
+                    return totalBuildings >= 15;
+                }
+            },
+            {
+                id: 'synchronized-firing',
+                name: 'Synchronized Firing',
+                description: 'Each click generates additional energy based on your current energy per second (10%)',
+                cost: 5000,
+                purchased: false,
+                effect: function() {
+                    // Update the click function to add this effect
+                    // We'll implement this via clickPower since that's already used
+                    const originalClickImpulse = clickImpulse;
+                    window.clickImpulse = function() {
+                        // Call the original function
+                        originalClickImpulse();
+                        
+                        // Add bonus energy from energy per second
+                        const bonus = gameState.energyPerSecond * 0.1;
+                        gameState.energy += bonus;
+                        gameState.totalEnergy += bonus;
+                        
+                        // Create floating text for the bonus
+                        const button = document.getElementById('impulse-button');
+                        const rect = button.getBoundingClientRect();
+                        const floatingText = document.createElement('div');
+                        floatingText.textContent = `+${bonus.toFixed(1)}`;
+                        floatingText.className = 'floating-text';
+                        floatingText.style.left = `${rect.left + rect.width / 2 + 20}px`;
+                        floatingText.style.top = `${rect.top}px`;
+                        document.body.appendChild(floatingText);
+                        
+                        // Remove floating text after animation ends
+                        setTimeout(() => {
+                            floatingText.remove();
+                        }, 2000);
+                        
+                        updateDisplay();
+                    };
+                },
+                requirement: function() {
+                    return gameState.energyPerSecond >= 50;
+                }
+            },
+            {
+                id: 'myelin-optimization',
+                name: 'Myelin Optimization',
+                description: 'Myelin Sheaths are 3x more effective',
+                cost: 15000,
+                purchased: false,
+                effect: function() {
+                    const myelin = gameState.buildings.find(b => b.id === 'myelin_sheath');
+                    if (myelin) {
+                        myelin.baseProduction *= 3;
+                        // Update the actual production
+                        myelin.production = myelin.baseProduction * myelin.count;
+                        calculateEnergyPerSecond();
+                    }
+                },
+                requirement: function() {
+                    const myelin = gameState.buildings.find(b => b.id === 'myelin_sheath');
+                    return myelin && myelin.count >= 20;
+                }
+            },
+            {
+                id: 'glial-enhancement',
+                name: 'Glial Enhancement',
+                description: 'Glial Cell Networks give +5% to all other buildings\' production',
+                cost: 60000,
+                purchased: false,
+                effect: function() {
+                    // We need to add a special calculation for this one
+                    // Let's add a new function to handle special building effects
+                    calculateBuildingEffects = function() {
+                        // Reset all buildings to their base production * count
+                        gameState.buildings.forEach(building => {
+                            building.production = building.baseProduction * building.count;
+                        });
+                        
+                        // Apply Glial Enhancement effect if purchased
+                        const upgrade = gameState.upgrades.find(u => u.id === 'glial-enhancement');
+                        if (upgrade && upgrade.purchased) {
+                            const glial = gameState.buildings.find(b => b.id === 'glial_cell_network');
+                            if (glial && glial.count > 0) {
+                                const bonusMultiplier = 1 + (glial.count * 0.05);
+                                gameState.buildings.forEach(building => {
+                                    if (building.id !== 'glial_cell_network') {
+                                        building.production *= bonusMultiplier;
+                                    }
+                                });
+                            }
+                        }
+                        
+                        // Call this after any building changes
+                        calculateEnergyPerSecond();
+                    };
+                    
+                    // Apply the effect immediately
+                    calculateBuildingEffects();
+                },
+                requirement: function() {
+                    const glial = gameState.buildings.find(b => b.id === 'glial_cell_network');
+                    return glial && glial.count >= 10;
+                }
+            },
+            {
+                id: 'neural-circuit-formation',
+                name: 'Neural Circuit Formation',
+                description: 'Buildings occasionally generate random bonus energy bursts',
+                cost: 150000,
+                purchased: false,
+                effect: function() {
+                    // Add a function to the game loop for random bursts
+                    if (!window.checkRandomBursts) {
+                        window.checkRandomBursts = function() {
+                            const upgrade = gameState.upgrades.find(u => u.id === 'neural-circuit-formation');
+                            if (upgrade && upgrade.purchased) {
+                                // 2% chance per second to trigger a burst
+                                if (Math.random() < 0.002) { // 0.2% chance per 100ms cycle
+                                    // Bonus is between 3-8 seconds worth of energy
+                                    const multiplier = 3 + Math.random() * 5;
+                                    const bonus = gameState.energyPerSecond * multiplier;
+                                    
+                                    gameState.energy += bonus;
+                                    gameState.totalEnergy += bonus;
+                                    
+                                    // Create a visual notification
+                                    const container = document.querySelector('.resources');
+                                    const notification = document.createElement('div');
+                                    notification.className = 'energy-burst-notification';
+                                    notification.innerHTML = `<span>Neural Burst! +${formatNumber(bonus)} energy</span>`;
+                                    notification.style.position = 'absolute';
+                                    notification.style.top = '50px';
+                                    notification.style.left = '50%';
+                                    notification.style.transform = 'translateX(-50%)';
+                                    notification.style.backgroundColor = 'rgba(138, 43, 226, 0.8)';
+                                    notification.style.padding = '10px 20px';
+                                    notification.style.borderRadius = '5px';
+                                    notification.style.color = 'white';
+                                    notification.style.boxShadow = '0 0 10px rgba(138, 43, 226, 0.7)';
+                                    notification.style.zIndex = '1000';
+                                    notification.style.animation = 'float-up 3s forwards';
+                                    
+                                    document.body.appendChild(notification);
+                                    
+                                    // Remove the notification after animation completes
+                                    setTimeout(() => {
+                                        notification.remove();
+                                    }, 3000);
+                                    
+                                    updateDisplay();
+                                }
+                            }
+                        };
+                        
+                        // Add the check to the game loop
+                        setInterval(window.checkRandomBursts, 100);
+                    }
+                },
+                requirement: function() {
+                    const totalBuildings = gameState.buildings.reduce((total, building) => total + building.count, 0);
+                    return totalBuildings >= 50;
+                }
+            },
+            {
+                id: 'long-term-potentiation',
+                name: 'Long-Term Potentiation',
+                description: 'All click upgrades are 50% more effective',
+                cost: 500000,
+                purchased: false,
+                effect: function() {
+                    // Boost current click power
+                    gameState.clickPower *= 1.5;
+                    
+                    // Make sure future click upgrades are also boosted
+                    const originalClickUpgrade = gameState.upgrades.find(u => u.id === 'better-clicks');
+                    if (originalClickUpgrade) {
+                        const originalEffect = originalClickUpgrade.effect;
+                        originalClickUpgrade.effect = function() {
+                            // Call the original effect
+                            originalEffect();
+                            
+                            // Add 50% more effectiveness
+                            const bonus = gameState.clickPower * 0.5;
+                            gameState.clickPower += bonus;
+                            updateClickPower();
+                        };
+                    }
+                    
+                    updateClickPower();
+                },
+                requirement: function() {
+                    return gameState.totalClicks >= 1000;
+                }
+            },
+            {
+                id: 'brain-wave-synchronization',
+                name: 'Brain Wave Synchronization',
+                description: 'When you buy a building, gain temporary bonus production for 30 seconds',
+                cost: 2000000,
+                purchased: false,
+                effect: function() {
+                    // Modify the purchaseBuilding function to add this effect
+                    const originalPurchaseBuilding = window.purchaseBuilding;
+                    window.purchaseBuilding = function(buildingId) {
+                        originalPurchaseBuilding(buildingId);
+                        
+                        const upgrade = gameState.upgrades.find(u => u.id === 'brain-wave-synchronization');
+                        if (upgrade && upgrade.purchased) {
+                            // Add a 30% boost for 30 seconds
+                            activateBrainWaveBoost();
+                        }
+                    };
+                    
+                    // Create a function to handle the temporary boost
+                    window.activateBrainWaveBoost = function() {
+                        // Store original production values
+                        const originalProductions = gameState.buildings.map(b => ({
+                            id: b.id,
+                            production: b.production,
+                            baseProduction: b.baseProduction
+                        }));
+                        
+                        // Apply 30% boost
+                        gameState.buildings.forEach(building => {
+                            building.baseProduction *= 1.3;
+                            building.production = building.baseProduction * building.count;
+                        });
+                        
+                        calculateEnergyPerSecond();
+                        updateDisplay();
+                        
+                        // Create a visual indicator
+                        const boostIndicator = document.createElement('div');
+                        boostIndicator.className = 'brain-wave-boost';
+                        boostIndicator.innerHTML = '<span>Brain Wave Boost: +30% production</span><div class="timer-bar"></div>';
+                        boostIndicator.style.position = 'fixed';
+                        boostIndicator.style.bottom = '20px';
+                        boostIndicator.style.right = '20px';
+                        boostIndicator.style.backgroundColor = 'rgba(138, 43, 226, 0.8)';
+                        boostIndicator.style.padding = '10px';
+                        boostIndicator.style.borderRadius = '5px';
+                        boostIndicator.style.color = 'white';
+                        boostIndicator.style.boxShadow = '0 0 10px rgba(138, 43, 226, 0.7)';
+                        boostIndicator.style.zIndex = '1000';
+                        
+                        const timerBar = boostIndicator.querySelector('.timer-bar');
+                        timerBar.style.height = '5px';
+                        timerBar.style.backgroundColor = '#00ffff';
+                        timerBar.style.width = '100%';
+                        timerBar.style.marginTop = '5px';
+                        timerBar.style.animation = 'timer-countdown 30s linear forwards';
+                        
+                        // Add keyframe animation for the timer
+                        if (!document.getElementById('timer-animation')) {
+                            const style = document.createElement('style');
+                            style.id = 'timer-animation';
+                            style.innerHTML = `
+                                @keyframes timer-countdown {
+                                    0% { width: 100%; }
+                                    100% { width: 0%; }
+                                }
+                            `;
+                            document.head.appendChild(style);
+                        }
+                        
+                        document.body.appendChild(boostIndicator);
+                        
+                        // Remove the boost after 30 seconds
+                        setTimeout(() => {
+                            // Restore original production values
+                            gameState.buildings.forEach(building => {
+                                const original = originalProductions.find(o => o.id === building.id);
+                                if (original) {
+                                    building.baseProduction = original.baseProduction;
+                                    building.production = original.production;
+                                }
+                            });
+                            
+                            calculateEnergyPerSecond();
+                            updateDisplay();
+                            
+                            // Remove the visual indicator
+                            boostIndicator.remove();
+                        }, 30000);
+                    };
+                },
+                requirement: function() {
+                    const oscillator = gameState.buildings.find(b => b.id === 'neural_oscillator');
+                    return oscillator && oscillator.count >= 5;
+                }
             }
         ]
     };
@@ -214,6 +523,10 @@ function startGameLoop() {
         
         // Update play time
         gameState.playTime += deltaTime;
+        
+        // Call the building effects calculation - only needed if you 
+        // have effects that change over time
+        calculateBuildingEffects();
         
         updateDisplay();
         saveGame();
@@ -257,6 +570,33 @@ function calculateEnergyPerSecond() {
     }, 0);
 }
 
+// Function to calculate building effects from upgrades
+function calculateBuildingEffects() {
+    // Reset all buildings to their base production * count
+    gameState.buildings.forEach(building => {
+        building.production = building.baseProduction * building.count;
+    });
+    
+    // Apply Glial Enhancement effect if purchased
+    const glialUpgrade = gameState.upgrades.find(u => u.id === 'glial-enhancement');
+    if (glialUpgrade && glialUpgrade.purchased) {
+        const glial = gameState.buildings.find(b => b.id === 'glial_cell_network');
+        if (glial && glial.count > 0) {
+            const bonusMultiplier = 1 + (glial.count * 0.05);
+            gameState.buildings.forEach(building => {
+                if (building.id !== 'glial_cell_network') {
+                    building.production *= bonusMultiplier;
+                }
+            });
+        }
+    }
+    
+    // You can add more special building effects here
+    
+    // Update energy per second
+    calculateEnergyPerSecond();
+}
+
 // Purchase a building
 function purchaseBuilding(buildingId) {
     const building = gameState.buildings.find(b => b.id === buildingId);
@@ -268,10 +608,18 @@ function purchaseBuilding(buildingId) {
         building.production = building.baseProduction * building.count;
         building.cost = Math.floor(building.baseCost * Math.pow(building.costMultiplier, building.count));
         
-        calculateEnergyPerSecond();
+        // Apply any special building effects
+        calculateBuildingEffects();
+        
         renderBuildings();
         renderUpgrades(); // Re-render upgrades in case requirements are met
         updateDisplay();
+        
+        // Check for Brain Wave Synchronization upgrade
+        const brainWaveUpgrade = gameState.upgrades.find(u => u.id === 'brain-wave-synchronization');
+        if (brainWaveUpgrade && brainWaveUpgrade.purchased) {
+            activateBrainWaveBoost();
+        }
     }
 }
 
@@ -309,11 +657,11 @@ function renderBuildings() {
         element.innerHTML = `
             <div class="building-info">
                 <div class="building-name">${building.name}</div>              
-                <span class="building-cost">Cost: ${Math.floor(building.cost)} Impulse Energy</span>
+                <span class="building-cost">Cost: ${formatNumber(building.cost)} Impulse Energy</span>
                 <span class="building-current-production-description">${dynamicBuildingDescription}</span>
             </div>
             <div class="building-count">${building.count}</div>
-            <div class="building-tooltip>
+            <div class="building-tooltip">
                 <span class="building-description-tooltip">${building.description}</span><br>
                 <span class="building-base-production-description-tooltip">${dynamicDescription}</span>
             </div>
@@ -339,10 +687,39 @@ function renderUpgrades() {
                 element.className += ' disabled';
             }
             
+            // Create a human-readable requirement description
+            let requirementText = "";
+            
+            // Handle different types of requirements for better tooltips
+            if (upgrade.id === 'better-clicks') {
+                requirementText = "Requires clicking at least 10 times";
+            } else if (upgrade.id === 'neuron-boost') {
+                requirementText = "Requires owning at least 5 Basic Neurons";
+            } else if (upgrade.id === 'dendrite-boost') {
+                requirementText = "Requires owning at least 10 Dendrite Collectors";
+            } else if (upgrade.id === 'neural-plasticity') {
+                requirementText = "Requires owning at least 15 buildings total";
+            } else if (upgrade.id === 'synchronized-firing') {
+                requirementText = "Requires at least 50 energy per second";
+            } else if (upgrade.id === 'myelin-optimization') {
+                requirementText = "Requires owning 20 Myelin Sheaths";
+            } else if (upgrade.id === 'glial-enhancement') {
+                requirementText = "Requires owning 10 Glial Cell Networks";
+            } else if (upgrade.id === 'neural-circuit-formation') {
+                requirementText = "Requires owning at least 50 total buildings";
+            } else if (upgrade.id === 'long-term-potentiation') {
+                requirementText = "Requires clicking at least 1,000 times total";
+            } else if (upgrade.id === 'brain-wave-synchronization') {
+                requirementText = "Requires owning at least 5 Neural Oscillators";
+            }
+            
             element.innerHTML = `
                 <div class="upgrade-name">${upgrade.name}</div>
                 <div class="upgrade-description">${upgrade.description}</div>
-                <div class="upgrade-cost">Cost: ${upgrade.cost} Impulse Energy</div>
+                <div class="upgrade-cost">Cost: ${formatNumber(upgrade.cost)} Impulse Energy</div>
+                <div class="upgrade-tooltip">
+                    <span class="upgrade-requirement">${requirementText}</span>
+                </div>
             `;
             
             if (meetsRequirement) {
@@ -356,11 +733,11 @@ function renderUpgrades() {
 
 // Update display elements
 function updateDisplay() {
-    document.getElementById('energy').textContent = Math.floor(gameState.energy);
+    document.getElementById('energy').textContent = formatNumber(gameState.energy);
     document.getElementById('energy-per-second').textContent = gameState.energyPerSecond.toFixed(2);
-    document.getElementById('total-energy').textContent = Math.floor(gameState.totalEnergy);
+    document.getElementById('total-energy').textContent = formatNumber(gameState.totalEnergy);
     document.getElementById('total-clicks').textContent = gameState.totalClicks;
-    document.getElementById('play-time').textContent = Math.floor(gameState.playTime);
+    document.getElementById('play-time').textContent = formatNumber(gameState.playTime);
     
     // Update buildings that can be afforded
     const buildingElements = document.querySelectorAll('.building');

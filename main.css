@@ -123,6 +123,7 @@ header {
     display: flex;
     cursor: pointer;
     transition: background-color 0.2s;
+    position: relative;
 }
 
 .building:hover {
@@ -159,24 +160,39 @@ header {
 
 .building-tooltip {
     position: absolute;
-    top: -10px;
-    left: 60%;
+    top: -40px; /* Position above the building element */
+    left: 70%;
     transform: translateX(-50%);
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 12px;
+    background-color: #4b0082; /* Purple background */
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    width: max-content;
+    max-width: 300px;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     pointer-events: none;
-    white-space: nowrap;
-    border: 1px solid #000;
     z-index: 1000;
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.7);
+    text-align: center;
 }
 
 .building:hover .building-tooltip {
     opacity: 1;
     visibility: visible;
+}
+
+.building-description-tooltip {
+    display: block;
+    margin-bottom: 5px;
+    color: #00ffff; /* Cyan color for the main description */
+}
+
+.building-base-production-description-tooltip {
+    display: block;
+    color: #2dda2d; /* Green color for the production description */
 }
 
 .upgrades-container {
@@ -190,10 +206,43 @@ header {
     margin-bottom: 10px;
     cursor: pointer;
     transition: background-color 0.2s;
+    position: relative; /* Added to properly position the tooltip */
 }
 
 .upgrade:hover {
     background-color: #252547;
+}
+
+.upgrade-tooltip {
+    position: absolute;
+    top: -40px;
+    left: 70%;
+    transform: translateX(-50%);
+    background-color: #4b0082;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    width: max-content;
+    max-width: 300px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.7);
+    text-align: center;
+}
+
+.upgrade:hover .upgrade-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.upgrade-requirement {
+    display: block;
+    margin-top: 5px;
+    color: #ff7f50; /* Orange color for requirements */
 }
 
 .disabled {
@@ -245,6 +294,45 @@ header {
         opacity: 0;
         transform: translateY(-100px);
     }
+}
+
+.brain-wave-boost {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: rgba(138, 43, 226, 0.8);
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.7);
+    z-index: 1000;
+}
+
+.timer-bar {
+    height: 5px;
+    background-color: #00ffff;
+    width: 100%;
+    margin-top: 5px;
+}
+
+/* Energy Burst Notification */
+.energy-burst-notification {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(138, 43, 226, 0.8);
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.7);
+    z-index: 1000;
+    animation: float-up 3s forwards;
+}
+
+@keyframes timer-countdown {
+    0% { width: 100%; }
+    100% { width: 0%; }
 }
 
 .tutorial {
