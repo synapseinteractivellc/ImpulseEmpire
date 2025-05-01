@@ -19,13 +19,40 @@ body {
 }
 
 header {
-    text-align: center;
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 100%;
 }
 
-header .button {
-    position: relative;
-    align-items: right;
+.header-buttons {
+    position: absolute;
+    right: 0;
+    top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.button {
+    padding: 8px 15px;
+    background: linear-gradient(to bottom, #8a2be2, #4b0082);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 5px rgba(138, 43, 226, 0.5);
+}
+
+.button:hover {
+    background: linear-gradient(to bottom, #9b4df7, #5c1a93);
+    box-shadow: 0 0 8px rgba(138, 43, 226, 0.8);
+}
+
+.button:active {
+    transform: scale(0.95);
 }
 
 .game-title {
