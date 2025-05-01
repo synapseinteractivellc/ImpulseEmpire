@@ -23,6 +23,11 @@ header {
     margin-bottom: 20px;
 }
 
+header .button {
+    position: relative;
+    align-items: right;
+}
+
 .game-title {
     font-size: 2.5rem;
     color: #8a2be2;
@@ -198,6 +203,11 @@ header {
 footer {
     margin-top: 30px;
     text-align: center;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+footer a {
     font-size: 0.8rem;
     color: #666;
 }
