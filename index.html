@@ -6,6 +6,7 @@
     <title>Impulse Empire</title>
     <link rel="stylesheet" href="./main.css">
     <link rel="stylesheet" href="./achievements.css">
+    <link rel="stylesheet" href="./prestige.css">
 </head>
 <body>
     <div class="container">
@@ -27,12 +28,16 @@
         <div class="resources">
             <div class="resource-count"><span id="energy">0</span> Impulse Energy</div>
             <div>Per second: <span id="energy-per-second">0.0</span></div>
+            <div id="brainwaves-display" style="display: none;">
+                Brainwaves: <span id="brainwaves">0</span>
+            </div>
         </div>
 
         <div class="tab-container">
             <div class="tab active" onclick="openTab('buildings')">Neurons</div>
             <div class="tab" onclick="openTab('upgrades')">Upgrades</div>
             <div class="tab" onclick="openTab('achievements')">Achievements</div>
+            <div class="tab" onclick="openTab('prestige')">Ascension</div>
             <div class="tab" onclick="openTab('stats')">Stats</div>
         </div>
 
@@ -63,6 +68,13 @@
             </div>
         </div>
 
+        <div id="prestige" class="tab-content">
+            <h2>Neural Ascension</h2>
+            <div class="prestige-container" id="prestige-container">
+                <!-- Prestige content will be added here by JavaScript -->
+            </div>
+        </div>
+
         <div id="stats" class="tab-content">
             <h2>Neural Stats</h2>
             <div>
@@ -70,6 +82,8 @@
                 <p>Total Clicks: <span id="total-clicks">0</span></p>
                 <p>Play Time: <span id="play-time">0</span> seconds</p>
                 <p>Achievements Unlocked: <span id="achievements-unlocked">0</span></p>
+                <p>Prestige Level: <span id="prestige-level">0</span></p>
+                <p>Total Brainwaves Earned: <span id="total-brainwaves">0</span></p>
             </div>
         </div>
 
@@ -78,8 +92,8 @@
             
         </footer>
     </div>
-    
     <script src="./game.js"></script>
     <script src="./achievements.js"></script>
+    <script src="./prestige.js"></script>
 </body>
 </html>
