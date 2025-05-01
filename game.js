@@ -18,6 +18,7 @@ function newGame() {
             {
                 id: 'neuron',
                 name: 'Basic Neuron',
+                visible: false,
                 description: 'The fundamental processing cell that forms the foundation of your neural network',
                 baseDescription: 'Generates 0.1 impulse energy per second',
                 buildingDescription: 'Generates 0.1 impulse energy per second',
@@ -31,6 +32,7 @@ function newGame() {
             {
                 id: 'dendrite',
                 name: 'Dendrite Collector',
+                visible: false,
                 description: 'Branch-like extensions that gather and channel incoming neural signals',
                 baseDescription: 'Generates 0.5 impulse energy per second',
                 buildingDescription: 'Generates 0.5 impulse energy per second',
@@ -44,6 +46,7 @@ function newGame() {
             {
                 id: 'axon_terminal',
                 name: 'Axon Terminal',
+                visible: false,
                 description: 'Specialized endings that transmit impulses across synaptic junctions',
                 baseDescription: 'Generates 2.5 impulse energy per second',
                 buildingDescription: 'Generates 2.5 impulse energy per second',
@@ -57,6 +60,7 @@ function newGame() {
             {
                 id: 'myelin_sheath',
                 name: 'Myelin Sheath',
+                visible: false,
                 description: 'Insulating layer that dramatically accelerates signal transmission speed',
                 baseDescription: 'Generates 6.25 impulse energy per second',
                 buildingDescription: 'Generates 6.25 impulse energy per second',
@@ -70,6 +74,7 @@ function newGame() {
             {
                 id: 'synapse_junction',
                 name: 'Synapse Junction',
+                visible: false,
                 description: 'Specialized junction between neurons that improves signal transmission',
                 baseDescription: 'Generates 15 impulse energy per second',
                 buildingDescription: 'Generates 15 impulse energy per second',
@@ -83,6 +88,7 @@ function newGame() {
             {
                 id: 'glial_cell_network',
                 name: 'Glial Cell Network',
+                visible: false,
                 description: 'Support cells that maintain neural health and enhance efficiency',
                 baseDescription: 'Generates 40 impulse energy per second',
                 buildingDescription: 'Generates 40 impulse energy per second',
@@ -96,6 +102,7 @@ function newGame() {
             {
                 id: 'neural_oscillator',
                 name: 'Neural Oscillator',
+                visible: false,
                 description: 'Creates rhythmic impulse patterns for enhanced energy generation',
                 baseDescription: 'Generates 250 impulse energy per second',
                 buildingDescription: 'Generates 250 impulse energy per second',
@@ -109,6 +116,7 @@ function newGame() {
             {
                 id: 'cortical_column',
                 name: 'Cortical Column ',
+                visible: false,
                 description: 'A complex arrangement of neurons forming a functional unit',
                 baseDescription: 'Generates 250 impulse energy per second',
                 buildingDescription: 'Generates 250 impulse energy per second',
@@ -122,6 +130,7 @@ function newGame() {
             {
                 id: 'thalamic_relay',
                 name: 'Thalamic Relay',
+                visible: false,
                 description: 'Routes and amplifies signals through major neural pathways',
                 baseDescription: 'Generates 2,000 impulse energy per second',
                 buildingDescription: 'Generates 2,000 impulse energy per second',
@@ -137,6 +146,7 @@ function newGame() {
             {
                 id: 'better-clicks',
                 name: 'Enhanced Impulses',
+                visible: false,
                 description: 'Double your click power',
                 requirementText: 'Requires clicking at least 10 times',
                 cost: 50,
@@ -152,6 +162,7 @@ function newGame() {
             {
                 id: 'better-clicks-2',
                 name: 'Enhanced Impulses',
+                visible: false,
                 description: 'Double your click power',
                 requirementText: 'Requires clicking at least 500 times',
                 cost: 2500,
@@ -167,6 +178,7 @@ function newGame() {
             {
                 id: 'neuron-boost',
                 name: 'Efficient Neurons',
+                visible: false,
                 description: 'Basic Neurons are twice as effective',
                 requirementText: 'Requires owning at least 5 Basic Neurons',
                 cost: 200,
@@ -183,6 +195,7 @@ function newGame() {
             {
                 id: 'dendrite-boost',
                 name: 'Efficient Dendrites',
+                visible: false,
                 description: 'Dendrite Collectors are twice as effective',
                 requirementText: 'Requires owning at least 10 Dendrite Collectors',
                 cost: 2000,
@@ -196,10 +209,10 @@ function newGame() {
                     return gameState.buildings.find(b => b.id === 'dendrite').count >= 10;
                 }
             },
-            // Add these new upgrades to your gameState.upgrades array
             {
                 id: 'neural-plasticity',
                 name: 'Neural Plasticity',
+                visible: false,
                 description: 'All buildings produce 25% more energy',
                 requirementText: 'Requires owning at least 15 buildings total',
                 cost: 1000,
@@ -220,6 +233,7 @@ function newGame() {
             {
                 id: 'synchronized-firing',
                 name: 'Synchronized Firing',
+                visible: false,
                 description: 'Each click generates additional energy based on your current energy per second (10%)',
                 requirementText: 'Requires at least 50 energy per second',
                 cost: 5000,
@@ -262,6 +276,7 @@ function newGame() {
             {
                 id: 'myelin-optimization',
                 name: 'Myelin Optimization',
+                visible: false,
                 description: 'Myelin Sheaths are 3x more effective',
                 requirementText: 'Requires owning 20 Myelin Sheaths',
                 cost: 15000,
@@ -283,6 +298,7 @@ function newGame() {
             {
                 id: 'glial-enhancement',
                 name: 'Glial Enhancement',
+                visible: false,
                 description: 'Glial Cell Networks give +5% to all other buildings\' production',
                 requirementText: 'Requires owning 10 Glial Cell Networks',
                 cost: 60000,
@@ -325,6 +341,7 @@ function newGame() {
             {
                 id: 'neural-circuit-formation',
                 name: 'Neural Circuit Formation',
+                visible: false,
                 description: 'Buildings occasionally generate random bonus energy bursts',
                 requirementText: 'Requires owning at least 50 total buildings',
                 cost: 150000,
@@ -385,6 +402,7 @@ function newGame() {
             {
                 id: 'long-term-potentiation',
                 name: 'Long-Term Potentiation',
+                visible: false,
                 description: 'All click upgrades are 50% more effective',
                 requirementText: 'Requires clicking at least 1,000 times total',
                 cost: 500000,
@@ -417,6 +435,7 @@ function newGame() {
             {
                 id: 'brain-wave-synchronization',
                 name: 'Brain Wave Synchronization',
+                visible: false,
                 description: 'When you buy a building, gain temporary bonus production for 30 seconds',
                 requirementText: 'Requires owning at least 5 Neural Oscillators',
                 cost: 2000000,
@@ -515,6 +534,7 @@ function newGame() {
             {
                 id: 'neural-maintenance',
                 name: 'Neural Maintenance',
+                visible: false,
                 description: 'Improves offline production to 50% of normal rate',
                 requirementText: 'Requires owning at least 25 total neurons',
                 cost: 25000,
@@ -530,6 +550,7 @@ function newGame() {
             {
                 id: 'autonomous-processing',
                 name: 'Autonomous Processing',
+                visible: false,
                 description: 'Improves offline production to 75% of normal rate',
                 requirementText: 'Requires owning at least 50 total neurons',
                 cost: 100000,
@@ -545,6 +566,7 @@ function newGame() {
             {
                 id: 'neural-automation',
                 name: 'Neural Automation',
+                visible: false,
                 description: 'Achieves 100% offline production efficiency',
                 requirementText: 'Requires owning at least 100 total neurons',
                 cost: 500000,
@@ -560,6 +582,7 @@ function newGame() {
             {
                 id: 'extended-memory',
                 name: 'Extended Neural Memory',
+                visible: false,
                 description: 'Increases maximum offline collection time to 24 hours',
                 requirementText: 'Requires generating 1M total energy',
                 cost: 250000,
@@ -574,6 +597,7 @@ function newGame() {
             {
                 id: 'persistent-memory',
                 name: 'Persistent Neural Memory',
+                visible: false,
                 description: 'Increases maximum offline collection time to 3 days',
                 requirementText: 'Requires generating 100M total energy',
                 cost: 5000000,
