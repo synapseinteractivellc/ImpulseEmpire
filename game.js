@@ -240,35 +240,7 @@ function newGame() {
                 cost: 5000,
                 purchased: false,
                 effect: function() {
-                    // Update the click function to add this effect
-                    // We'll implement this via clickPower since that's already used
-                    const originalClickImpulse = clickImpulse;
-                    window.clickImpulse = function() {
-                        // Call the original function
-                        originalClickImpulse();
-                        
-                        // Add bonus energy from energy per second
-                        const bonus = gameState.energyPerSecond * 0.1;
-                        gameState.energy += bonus;
-                        gameState.totalEnergy += bonus;
-                        
-                        // Create floating text for the bonus
-                        const button = document.getElementById('impulse-button');
-                        const rect = button.getBoundingClientRect();
-                        const floatingText = document.createElement('div');
-                        floatingText.textContent = `+${bonus.toFixed(1)}`;
-                        floatingText.className = 'floating-text';
-                        floatingText.style.left = `${rect.left + rect.width / 2 + 20}px`;
-                        floatingText.style.top = `${rect.top}px`;
-                        document.body.appendChild(floatingText);
-                        
-                        // Remove floating text after animation ends
-                        setTimeout(() => {
-                            floatingText.remove();
-                        }, 2000);
-                        
-                        updateDisplay();
-                    };
+                    // Calculated in clickImpulse when this is marked purchased: true;
                 },
                 requirement: function() {
                     return gameState.energyPerSecond >= 50;
@@ -771,15 +743,25 @@ function showOfflineProgressModal(production, timeAwaySeconds) {
 
 // Handle clicking the impulse button
 function clickImpulse() {
-    gameState.energy += gameState.clickPower;
-    gameState.totalEnergy += gameState.clickPower;
+    let energyPerClick = gameState.clickPower;
+
+
+    const syncFiringUpgrade = gameState.upgrades.find(u => u.id === 'synchronized-firing');
+    if (syncFiringUpgrade && syncFiringUpgrade.purchased) {
+        energyPerClick += (gameState.energyPerSecond * 0.1);
+    }
+
+    energyPerClick = Math.floor(energyPerClick);
+
+    gameState.energy += energyPerClick;
+    gameState.totalEnergy += energyPerClick;
     gameState.totalClicks++;
     
     // Create floating text effect
     const button = document.getElementById('impulse-button');
     const rect = button.getBoundingClientRect();
     const floatingText = document.createElement('div');
-    floatingText.textContent = `+${gameState.clickPower}`;
+    floatingText.textContent = `+${energyPerClick}`;
     floatingText.className = 'floating-text';
     floatingText.style.left = `${rect.left + rect.width / 2}px`;
     floatingText.style.top = `${rect.top}px`;

@@ -120,7 +120,7 @@ function initPrestige() {
                     id: 'auto-click',
                     name: 'Autonomous Impulse Generator',
                     description: 'Automatically fires 1 impulse per second',
-                    cost: 100,
+                    cost: 25,
                     purchased: false
                 },
                 {
