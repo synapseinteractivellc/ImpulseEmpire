@@ -1,5 +1,6 @@
 // Game state
 let gameState;
+let oldGameState;
 
 // Create a new game state
 function newGame() {
@@ -614,6 +615,9 @@ function newGame() {
 
     // Initialize the achievements system
     initAchievements();
+
+    // Initialize the prestige system
+    initPrestige();
     
     // Make sure to calculate energy per second
     calculateEnergyPerSecond();
@@ -638,6 +642,7 @@ function initGame() {
     renderBuildings();
     renderUpgrades();
     renderAchievements();
+    renderPrestige();
     updateDisplay();
     startGameLoop();
 
@@ -967,6 +972,9 @@ function updateDisplay() {
             achievementsUnlocked.textContent = `${gameState.achievements.totalAchieved}/${gameState.achievements.list.length}`;
         }
     }
+
+    document.getElementById('prestige-count').textContent = gameState.prestige ? gameState.prestige.prestigeCount : 0;
+    document.getElementById('total-npp-earned').textContent = gameState.prestige ? formatNumber(gameState.prestige.totalNPPEarned) : 0;
     
     // Update buildings that can be afforded
     const buildingElements = document.querySelectorAll('.building');
@@ -1086,7 +1094,23 @@ function saveGame() {
                 achieved: a.achieved,
                 progress: a.progress
             }))
-        } : null
+        } : null,
+        prestige: {
+            neuralPlasticityPoints: gameState.prestige.neuralPlasticityPoints,
+            totalNPPEarned: gameState.prestige.totalNPPEarned,
+            prestigeCount: gameState.prestige.prestigeCount,
+            lastResetTime: gameState.prestige.lastResetTime,
+            upgrades: gameState.prestige.upgrades.map(u => ({
+                id: u.id,
+                level: u.level,
+                currentCost: u.currentCost
+            })),
+            specialUnlocks: gameState.prestige.specialUnlocks.map(u => ({
+                id: u.id,
+                purchased: u.purchased,
+                options: u.options
+            }))
+        }
     };
     
     localStorage.setItem('impulseEmpire', JSON.stringify(saveData));
@@ -1145,6 +1169,27 @@ function loadGame() {
                 });
             }
         }
+
+        // Load prestige data
+        if (parsedData.prestige) {
+            gameState.prestige = parsedData.prestige;
+            
+            // Restore the functions for upgrades
+            gameState.prestige.upgrades.forEach(savedUpgrade => {
+                const templateUpgrade = window.templatePrestigeUpgrades.find(u => u.id === savedUpgrade.id);
+                if (templateUpgrade) {
+                    savedUpgrade.effect = templateUpgrade.effect;
+                }
+            });
+        } else {
+            // Initialize prestige system if it doesn't exist
+            initPrestige();
+        }
+        
+        // Apply prestige upgrades effects
+        if (gameState.prestige) {
+            applyPrestigeUpgrades();
+        }
         
         calculateEnergyPerSecond();
         tutorialSeen();
@@ -1155,7 +1200,10 @@ function loadGame() {
 
 // Reset game
 function resetGame() {
-    if (confirm('Are you sure you want to reset your game? All progress will be lost!')) {
+    if (confirm('Are you sure you want to reset your game? ALL progress will be lost; even PRESTIGE progress!')) {
+        // Clean up prestige-related intervals
+        cleanupPrestigeIntervals();
+        
         localStorage.removeItem('impulseEmpire');
         
         // Reset game state to initial values
@@ -1166,6 +1214,7 @@ function resetGame() {
         renderBuildings();
         renderUpgrades();
         renderAchievements();
+        renderPrestige();
         updateDisplay();
         tutorialSeen();
     }

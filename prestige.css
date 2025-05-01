@@ -1,0 +1,424 @@
+/* Prestige System Styling */
+
+/* Prestige Tab Content */
+.prestige-stats {
+    background-color: #1a1a2e;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.npp-counter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background-color: #252547;
+    border-radius: 8px;
+    min-width: 200px;
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+}
+
+.npp-title {
+    font-size: 0.9rem;
+    color: #cccccc;
+    margin-bottom: 5px;
+}
+
+.npp-count {
+    font-size: 2rem;
+    color: #00ffff;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.total-npp {
+    font-size: 0.8rem;
+    color: #aaaaaa;
+    margin-top: 5px;
+}
+
+.prestige-info {
+    flex: 1;
+}
+
+.prestige-info p {
+    margin-bottom: 10px;
+}
+
+.prestige-info ul {
+    margin-bottom: 15px;
+    padding-left: 20px;
+}
+
+.prestige-info li {
+    margin-bottom: 5px;
+}
+
+.highlight {
+    color: #00ffff;
+    font-weight: bold;
+}
+
+.reward-breakdown {
+    background-color: #252547;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+.reward-breakdown p {
+    margin-bottom: 5px;
+    color: #cccccc;
+}
+
+.prestige-button {
+    background: linear-gradient(to bottom, #ff4500, #8b0000);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 10px rgba(255, 69, 0, 0.5);
+}
+
+.prestige-button:hover {
+    background: linear-gradient(to bottom, #ff5722, #a52a2a);
+    transform: scale(1.05);
+}
+
+/* Prestige Upgrades */
+.prestige-upgrades-container, .special-unlocks-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.prestige-upgrade, .special-unlock {
+    background-color: #1a1a2e;
+    padding: 15px;
+    border-radius: 10px;
+    transition: transform 0.2s;
+    border: 1px solid #252547;
+    display: flex;
+    flex-direction: column;
+}
+
+.prestige-upgrade:hover, .special-unlock:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+}
+
+.prestige-upgrade.disabled, .special-unlock.disabled {
+    opacity: 0.7;
+}
+
+.prestige-upgrade.maxed {
+    border: 1px solid #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.special-unlock.purchased {
+    border: 1px solid #00ff7f;
+    box-shadow: 0 0 10px rgba(0, 255, 127, 0.3);
+}
+
+.prestige-upgrade-header, .special-unlock-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.prestige-upgrade-name, .special-unlock-name {
+    font-size: 1.1rem;
+    color: #00ffff;
+    font-weight: bold;
+}
+
+.prestige-upgrade-level {
+    font-size: 0.9rem;
+    color: #ff7f50;
+    background-color: rgba(255, 127, 80, 0.2);
+    padding: 3px 8px;
+    border-radius: 10px;
+}
+
+.special-unlock-status {
+    font-size: 0.9rem;
+    color: #00ff7f;
+    background-color: rgba(0, 255, 127, 0.2);
+    padding: 3px 8px;
+    border-radius: 10px;
+}
+
+.prestige-upgrade-description, .special-unlock-description {
+    font-size: 0.9rem;
+    color: #cccccc;
+    margin-bottom: 10px;
+}
+
+.prestige-upgrade-effect {
+    font-size: 0.9rem;
+    color: #00ff7f;
+    margin-bottom: 10px;
+}
+
+.prestige-upgrade-cost, .special-unlock-cost {
+    font-size: 0.9rem;
+    color: #ff7f50;
+    margin-bottom: 10px;
+}
+
+.upgrade-button, .unlock-button {
+    background: linear-gradient(to bottom, #8a2be2, #4b0082);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 5px rgba(138, 43, 226, 0.5);
+    margin-top: auto;
+}
+
+.upgrade-button:hover, .unlock-button:hover {
+    background: linear-gradient(to bottom, #9b4df7, #5c1a93);
+    transform: scale(1.05);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Auto-building Controls */
+.auto-building-controls {
+    margin-top: 10px;
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #252547;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+    background-color: #8a2be2;
+}
+
+input:focus + .toggle-slider {
+    box-shadow: 0 0 1px #8a2be2;
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(26px);
+}
+
+.building-toggles {
+    background-color: #252547;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.building-toggles p {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #cccccc;
+}
+
+.building-toggle-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 5px;
+}
+
+.building-toggle {
+    font-size: 0.9rem;
+    color: white;
+}
+
+.building-toggle label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.building-toggle input {
+    margin-right: 5px;
+}
+
+/* Prestige Modal */
+.prestige-modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.prestige-modal {
+    background: linear-gradient(to bottom, #252547, #1a1a2e);
+    border: 2px solid #8a2be2;
+    border-radius: 15px;
+    padding: 25px;
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.7);
+    animation: scaleIn 0.3s ease-in-out;
+}
+
+.prestige-modal h2 {
+    color: #ff7f50;
+    margin-top: 0;
+    font-size: 1.8rem;
+    text-shadow: 0 0 5px rgba(255, 127, 80, 0.5);
+}
+
+.prestige-reward {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.reward-icon {
+    font-size: 3rem;
+    margin-right: 15px;
+    color: #8a2be2;
+    text-shadow: 0 0 10px rgba(138, 43, 226, 0.7);
+}
+
+.reward-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.npp-gained {
+    font-size: 2rem;
+    color: #00ffff;
+    font-weight: bold;
+    margin: 5px 0;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.prestige-breakdown {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+    margin: 15px 0;
+}
+
+.breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.breakdown-label {
+    color: #cccccc;
+}
+
+.breakdown-value {
+    color: #00ffff;
+    font-weight: bold;
+}
+
+.continue-button {
+    background: linear-gradient(to bottom, #8a2be2, #4b0082);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 30px;
+    font-size: 1.2rem;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+}
+
+.continue-button:hover {
+    background: linear-gradient(to bottom, #9b4df7, #5c1a93);
+    box-shadow: 0 0 15px rgba(138, 43, 226, 0.8);
+    transform: scale(1.05);
+}
+
+.continue-button:active {
+    transform: scale(0.95);
+}
+
+.prestige-modal.closing {
+    animation: scaleOut 0.5s ease-in-out forwards;
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes scaleOut {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0.8); opacity: 0; }
+}
