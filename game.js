@@ -16,6 +16,7 @@ function newGame() {
             {
                 id: 'neuron',
                 name: 'Basic Neuron',
+                description: 'The fundamental processing cell that forms the foundation of your neural network',
                 baseDescription: 'Generates 0.1 impulse energy per second',
                 buildingDescription: 'Generates 0.1 impulse energy per second',
                 baseCost: 10,
@@ -28,6 +29,7 @@ function newGame() {
             {
                 id: 'dendrite',
                 name: 'Dendrite Collector',
+                description: 'Branch-like extensions that gather and channel incoming neural signals',
                 baseDescription: 'Generates 0.5 impulse energy per second',
                 buildingDescription: 'Generates 0.5 impulse energy per second',
                 baseCost: 100,
@@ -40,6 +42,7 @@ function newGame() {
             {
                 id: 'axon_terminal',
                 name: 'Axon Terminal',
+                description: 'Specialized endings that transmit impulses across synaptic junctions',
                 baseDescription: 'Generates 2.5 impulse energy per second',
                 buildingDescription: 'Generates 2.5 impulse energy per second',
                 baseCost: 500,
@@ -52,6 +55,7 @@ function newGame() {
             {
                 id: 'myelin_sheath',
                 name: 'Myelin Sheath',
+                description: 'Insulating layer that dramatically accelerates signal transmission speed',
                 baseDescription: 'Generates 6.25 impulse energy per second',
                 buildingDescription: 'Generates 6.25 impulse energy per second',
                 baseCost: 2500,
@@ -300,16 +304,17 @@ function renderBuildings() {
         
         // Dynamic description that shows the current production
         const dynamicDescription = `Each one generates ${building.baseProduction.toFixed(2)} impulse energy per second`;
-        const dynamicBuildingDescription = `Generates ${building.production.toFixed(2)} impulse energy per second`;
+        const dynamicBuildingDescription = `Total Generation: ${building.production.toFixed(2)} impulse energy/second`;
         
         element.innerHTML = `
             <div class="building-info">
-                <div class="building-name">${building.name}</div>
-                <div class="building-description">${dynamicDescription}</div>
-                <div class="building-description">${dynamicBuildingDescription}</div>
-                <div class="building-cost">Cost: ${Math.floor(building.cost)} Impulse Energy</div>
+                <div class="building-name">${building.name}</div>              
+                <span class="building-cost">Cost: ${Math.floor(building.cost)} Impulse Energy</span>
+                <span class="building-base-production-description">${dynamicBuildingDescription}</span>
             </div>
             <div class="building-count">${building.count}</div>
+            <div class="building-description-tooltip">${building.description}</div>
+            <div class="building-current-production-description-tooltip">${dynamicDescription}</div>
         `;
         
         element.addEventListener('click', () => purchaseBuilding(building.id));

@@ -121,8 +121,6 @@ header {
     padding: 15px;
     border-radius: 10px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
     cursor: pointer;
     transition: background-color 0.2s;
 }
@@ -145,10 +143,29 @@ header {
     color: #ff7f50;
 }
 
+.building-base-production-description {    
+    margin-left: 25%;
+    text-align: right;
+    font-size: 0.9rem;
+    color: #2dda2d;
+}
+
 .building-count {
     font-size: 1.5rem;
     color: white;
     margin-left: 15px;
+}
+
+.building-description-tooltip,
+.building-current-production-description-tooltip {
+    visibility: hidden;
+}
+
+.building-description-tooltip,
+.building-current-production-description-tooltip :hover{
+    font-size: 0.9rem;
+    color: #2dda2d;
+    visibility: visible;
 }
 
 .upgrades-container {
