@@ -136,6 +136,7 @@ function newGame() {
                 id: 'better-clicks',
                 name: 'Enhanced Impulses',
                 description: 'Double your click power',
+                requirementText: 'Requires clicking at least 10 times',
                 cost: 50,
                 purchased: false,
                 effect: function() {
@@ -147,9 +148,25 @@ function newGame() {
                 }
             },
             {
+                id: 'better-clicks-2',
+                name: 'Enhanced Impulses',
+                description: 'Double your click power',
+                requirementText: 'Requires clicking at least 500 times',
+                cost: 2500,
+                purchased: false,
+                effect: function() {
+                    gameState.clickPower *= 2;
+                    updateClickPower();
+                },
+                requirement: function() {
+                    return gameState.totalClicks >= 500;
+                }
+            },
+            {
                 id: 'neuron-boost',
                 name: 'Efficient Neurons',
                 description: 'Basic Neurons are twice as effective',
+                requirementText: 'Requires owning at least 5 Basic Neurons',
                 cost: 200,
                 purchased: false,
                 effect: function() {
@@ -165,6 +182,7 @@ function newGame() {
                 id: 'dendrite-boost',
                 name: 'Efficient Dendrites',
                 description: 'Dendrite Collectors are twice as effective',
+                requirementText: 'Requires owning at least 10 Dendrite Collectors',
                 cost: 2000,
                 purchased: false,
                 effect: function() {
@@ -181,6 +199,7 @@ function newGame() {
                 id: 'neural-plasticity',
                 name: 'Neural Plasticity',
                 description: 'All buildings produce 25% more energy',
+                requirementText: 'Requires owning at least 15 buildings total',
                 cost: 1000,
                 purchased: false,
                 effect: function() {
@@ -200,6 +219,7 @@ function newGame() {
                 id: 'synchronized-firing',
                 name: 'Synchronized Firing',
                 description: 'Each click generates additional energy based on your current energy per second (10%)',
+                requirementText: 'Requires at least 50 energy per second',
                 cost: 5000,
                 purchased: false,
                 effect: function() {
@@ -241,6 +261,7 @@ function newGame() {
                 id: 'myelin-optimization',
                 name: 'Myelin Optimization',
                 description: 'Myelin Sheaths are 3x more effective',
+                requirementText: 'Requires owning 20 Myelin Sheaths',
                 cost: 15000,
                 purchased: false,
                 effect: function() {
@@ -261,6 +282,7 @@ function newGame() {
                 id: 'glial-enhancement',
                 name: 'Glial Enhancement',
                 description: 'Glial Cell Networks give +5% to all other buildings\' production',
+                requirementText: 'Requires owning 10 Glial Cell Networks',
                 cost: 60000,
                 purchased: false,
                 effect: function() {
@@ -302,6 +324,7 @@ function newGame() {
                 id: 'neural-circuit-formation',
                 name: 'Neural Circuit Formation',
                 description: 'Buildings occasionally generate random bonus energy bursts',
+                requirementText: 'Requires owning at least 50 total buildings',
                 cost: 150000,
                 purchased: false,
                 effect: function() {
@@ -361,6 +384,7 @@ function newGame() {
                 id: 'long-term-potentiation',
                 name: 'Long-Term Potentiation',
                 description: 'All click upgrades are 50% more effective',
+                requirementText: 'Requires clicking at least 1,000 times total',
                 cost: 500000,
                 purchased: false,
                 effect: function() {
@@ -392,6 +416,7 @@ function newGame() {
                 id: 'brain-wave-synchronization',
                 name: 'Brain Wave Synchronization',
                 description: 'When you buy a building, gain temporary bonus production for 30 seconds',
+                requirementText: 'Requires owning at least 5 Neural Oscillators',
                 cost: 2000000,
                 purchased: false,
                 effect: function() {
@@ -685,40 +710,14 @@ function renderUpgrades() {
             
             if (!meetsRequirement || gameState.energy < upgrade.cost) {
                 element.className += ' disabled';
-            }
-            
-            // Create a human-readable requirement description
-            let requirementText = "";
-            
-            // Handle different types of requirements for better tooltips
-            if (upgrade.id === 'better-clicks') {
-                requirementText = "Requires clicking at least 10 times";
-            } else if (upgrade.id === 'neuron-boost') {
-                requirementText = "Requires owning at least 5 Basic Neurons";
-            } else if (upgrade.id === 'dendrite-boost') {
-                requirementText = "Requires owning at least 10 Dendrite Collectors";
-            } else if (upgrade.id === 'neural-plasticity') {
-                requirementText = "Requires owning at least 15 buildings total";
-            } else if (upgrade.id === 'synchronized-firing') {
-                requirementText = "Requires at least 50 energy per second";
-            } else if (upgrade.id === 'myelin-optimization') {
-                requirementText = "Requires owning 20 Myelin Sheaths";
-            } else if (upgrade.id === 'glial-enhancement') {
-                requirementText = "Requires owning 10 Glial Cell Networks";
-            } else if (upgrade.id === 'neural-circuit-formation') {
-                requirementText = "Requires owning at least 50 total buildings";
-            } else if (upgrade.id === 'long-term-potentiation') {
-                requirementText = "Requires clicking at least 1,000 times total";
-            } else if (upgrade.id === 'brain-wave-synchronization') {
-                requirementText = "Requires owning at least 5 Neural Oscillators";
-            }
+            }        
             
             element.innerHTML = `
                 <div class="upgrade-name">${upgrade.name}</div>
                 <div class="upgrade-description">${upgrade.description}</div>
                 <div class="upgrade-cost">Cost: ${formatNumber(upgrade.cost)} Impulse Energy</div>
                 <div class="upgrade-tooltip">
-                    <span class="upgrade-requirement">${requirementText}</span>
+                    <span class="upgrade-requirement">${upgrade.requirementText}</span>
                 </div>
             `;
             
@@ -887,7 +886,11 @@ function tutorialSeen() {
 
 // Format large numbers
 function formatNumber(num) {
-    if (num >= 1000000) {
+    if (num >= 1000000000000) {
+        return (num / 1000000000000).toFixed(1) + 'T';
+    } else if (num >= 1000000000) {
+        return (num / 1000000000).toFixed(1) + 'B';
+    } else if (num >= 1000000) {
         return (num / 1000000).toFixed(1) + 'M';
     } else if (num >= 1000) {
         return (num / 1000).toFixed(1) + 'K';
