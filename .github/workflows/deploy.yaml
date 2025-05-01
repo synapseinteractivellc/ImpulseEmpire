@@ -1,0 +1,36 @@
+name: github-pages
+
+# GitHub Pages specific configuration
+on:
+  push:
+    branches: [ main ]  # Deploy when pushing to main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      # No build step needed for simple HTML/CSS/JS site
+      
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: .  # Root directory as the source
+          branch: gh-pages  # The branch the deployment will target
+          clean: true  # Automatically remove deleted files from the deployment branch
+          
+      - name: Create .nojekyll file
+        run: touch .nojekyll
+        
+      ## Configuration for custom domain (optional)
+      #- name: Configure custom domain
+      #  run: |
+      #    echo "impulse-empire.example.com" > CNAME
+          
+# GitHub Pages Configuration Notes:
+# 1. This workflow will create a gh-pages branch with your site content
+# 2. In your GitHub repository settings, enable GitHub Pages and select the gh-pages branch
+# 3. Replace 'impulse-empire.example.com' with your actual domain if you have one
+# 4. If you don't have a custom domain, remove the 'Configure custom domain' step
