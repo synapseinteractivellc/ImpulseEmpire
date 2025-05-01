@@ -628,6 +628,9 @@ function initGame() {
         calculateOfflineProgress();
     }
     
+    // Update visibility of buildings and upgrades
+    updateVisibility();
+    
     tutorialSeen();
     renderBuildings();
     renderUpgrades();
@@ -653,9 +656,11 @@ function startGameLoop() {
         // Update play time
         gameState.playTime += deltaTime;
         
-        // Call the building effects calculation - only needed if you 
-        // have effects that change over time
+        // Call the building effects calculation
         calculateBuildingEffects();
+        
+        // Check for new unlocks
+        updateVisibility();
         
         updateDisplay();
         saveGame();
@@ -770,6 +775,7 @@ function clickImpulse() {
         floatingText.remove();
     }, 2000);
     
+    updateVisibility(); // Check for new buildings/upgrades to show
     updateDisplay();
 }
 
@@ -827,8 +833,9 @@ function purchaseBuilding(buildingId) {
         // Apply any special building effects
         calculateBuildingEffects();
         
+        updateVisibility(); // Check for new buildings/upgrades to show
         renderBuildings();
-        renderUpgrades(); // Re-render upgrades in case requirements are met
+        renderUpgrades();
         updateDisplay();
         
         // Check for Brain Wave Synchronization upgrade
@@ -848,6 +855,7 @@ function purchaseUpgrade(upgradeId) {
         upgrade.purchased = true;
         upgrade.effect();
         
+        updateVisibility(); // Check for new buildings/upgrades to show
         renderUpgrades();
         renderBuildings();
         updateDisplay();
@@ -860,31 +868,34 @@ function renderBuildings() {
     container.innerHTML = '';
     
     gameState.buildings.forEach(building => {
-        const element = document.createElement('div');
-        element.className = 'building';
-        if (gameState.energy < building.cost) {
-            element.className += ' disabled';
+        // Only render visible buildings
+        if (building.visible) {
+            const element = document.createElement('div');
+            element.className = 'building';
+            if (gameState.energy < building.cost) {
+                element.className += ' disabled';
+            }
+            
+            // Dynamic description that shows the current production
+            const dynamicDescription = `Each one generates ${building.baseProduction.toFixed(2)} impulse energy per second`;
+            const dynamicBuildingDescription = `Total Generation: ${building.production.toFixed(2)} impulse energy/second`;
+            
+            element.innerHTML = `
+                <div class="building-info">
+                    <div class="building-name">${building.name}</div>              
+                    <span class="building-cost">Cost: ${formatNumber(building.cost)} Impulse Energy</span>
+                    <span class="building-current-production-description">${dynamicBuildingDescription}</span>
+                </div>
+                <div class="building-count">${building.count}</div>
+                <div class="building-tooltip">
+                    <span class="building-description-tooltip">${building.description}</span><br>
+                    <span class="building-base-production-description-tooltip">${dynamicDescription}</span>
+                </div>
+            `;
+            
+            element.addEventListener('click', () => purchaseBuilding(building.id));
+            container.appendChild(element);
         }
-        
-        // Dynamic description that shows the current production
-        const dynamicDescription = `Each one generates ${building.baseProduction.toFixed(2)} impulse energy per second`;
-        const dynamicBuildingDescription = `Total Generation: ${building.production.toFixed(2)} impulse energy/second`;
-        
-        element.innerHTML = `
-            <div class="building-info">
-                <div class="building-name">${building.name}</div>              
-                <span class="building-cost">Cost: ${formatNumber(building.cost)} Impulse Energy</span>
-                <span class="building-current-production-description">${dynamicBuildingDescription}</span>
-            </div>
-            <div class="building-count">${building.count}</div>
-            <div class="building-tooltip">
-                <span class="building-description-tooltip">${building.description}</span><br>
-                <span class="building-base-production-description-tooltip">${dynamicDescription}</span>
-            </div>
-        `;
-        
-        element.addEventListener('click', () => purchaseBuilding(building.id));
-        container.appendChild(element);
     });
 }
 
@@ -894,7 +905,8 @@ function renderUpgrades() {
     container.innerHTML = '';
     
     gameState.upgrades.forEach(upgrade => {
-        if (!upgrade.purchased) {
+        // Only show unpurchased and visible upgrades
+        if (!upgrade.purchased && upgrade.visible) {
             const meetsRequirement = upgrade.requirement();
             const element = document.createElement('div');
             element.className = 'upgrade';
@@ -954,6 +966,69 @@ function updateDisplay() {
     });
 }
 
+function updateVisibility() {
+    // Make the first building (neuron) always visible
+    const neuron = gameState.buildings.find(b => b.id === 'neuron');
+    neuron.visible = true;
+    
+    // Make buildings visible based on having enough energy or owning previous tier
+    for (let i = 1; i < gameState.buildings.length; i++) {
+        const prevBuilding = gameState.buildings[i - 1];
+        const currentBuilding = gameState.buildings[i];
+        
+        // Building becomes visible if player has 30% of its cost OR owns at least one of previous tier
+        currentBuilding.visible = (gameState.energy >= currentBuilding.cost * 0.3) || (prevBuilding.count > 0);
+    }
+    
+    // Make upgrades visible based on meeting requirements or approaching required thresholds
+    gameState.upgrades.forEach(upgrade => {
+        if (!upgrade.purchased) {
+            // Logic for making upgrades visible:
+            // 1. For click-based upgrades, make visible after 50% of required clicks
+            if (upgrade.id.includes('better-clicks')) {
+                const clickRequirement = parseInt(upgrade.requirementText.match(/\d+/)[0]);
+                upgrade.visible = gameState.totalClicks >= (clickRequirement * 0.5);
+            }
+            // 2. For building count-based upgrades, visible once player has 50% of required count
+            else if (upgrade.requirementText.includes('owning at least')) {
+                const buildingMatch = upgrade.requirementText.match(/(\d+)\s+(.+?)s?$/);
+                if (buildingMatch) {
+                    const requiredCount = parseInt(buildingMatch[1]);
+                    const buildingName = buildingMatch[2].trim();
+                    
+                    // Check if it's a specific building or total buildings
+                    if (buildingName.toLowerCase().includes('total')) {
+                        const totalBuildings = gameState.buildings.reduce((total, b) => total + b.count, 0);
+                        upgrade.visible = totalBuildings >= (requiredCount * 0.5);
+                    } else {
+                        // Find the building by name (partial match)
+                        const building = gameState.buildings.find(b => 
+                            b.name.toLowerCase().includes(buildingName.toLowerCase()));
+                        if (building) {
+                            upgrade.visible = building.count >= (requiredCount * 0.5);
+                        }
+                    }
+                }
+            }
+            // 3. For energy-based upgrades, visible at 50% of required energy
+            else if (upgrade.requirementText.includes('energy')) {
+                const energyMatch = upgrade.requirementText.match(/(\d+[KMB]?)/);
+                if (energyMatch) {
+                    let requiredEnergy = parseInt(energyMatch[1]);
+                    if (energyMatch[1].includes('K')) requiredEnergy *= 1000;
+                    if (energyMatch[1].includes('M')) requiredEnergy *= 1000000;
+                    if (energyMatch[1].includes('B')) requiredEnergy *= 1000000000;
+                    upgrade.visible = gameState.energyPerSecond >= (requiredEnergy * 0.5);
+                }
+            }
+            // 4. Show generic upgrades when player has at least 50% of the cost in energy
+            else {
+                upgrade.visible = gameState.energy >= (upgrade.cost * 0.5);
+            }
+        }
+    });
+}
+
 // Save game to local storage
 function saveGame() {
     const saveData = {
@@ -970,17 +1045,18 @@ function saveGame() {
             count: b.count,
             baseProduction: b.baseProduction,
             production: b.production,
+            visible: b.visible // Save visibility status
         })),
         upgrades: gameState.upgrades.map(u => ({
             id: u.id,
-            purchased: u.purchased
+            purchased: u.purchased,
+            visible: u.visible // Save visibility status
         }))
     };
     
     localStorage.setItem('impulseEmpire', JSON.stringify(saveData));
 }
 
-// Load game from local storage
 function loadGame() {
     const saveData = localStorage.getItem('impulseEmpire');
     if (saveData) {
@@ -1005,6 +1081,7 @@ function loadGame() {
                     building.count = savedBuilding.count || 0;
                     building.cost = savedBuilding.cost || building.baseCost;
                     building.production = savedBuilding.production || 0;
+                    building.visible = savedBuilding.visible || false; // Load visibility status
                 }
             });
         }
@@ -1013,7 +1090,8 @@ function loadGame() {
             parsedData.upgrades.forEach(savedUpgrade => {
                 const upgrade = gameState.upgrades.find(u => u.id === savedUpgrade.id);
                 if (upgrade) {
-                    upgrade.purchased = savedUpgrade.purchased || false;                    
+                    upgrade.purchased = savedUpgrade.purchased || false;      
+                    upgrade.visible = savedUpgrade.visible || false; // Load visibility status              
                 }
             });
         }
