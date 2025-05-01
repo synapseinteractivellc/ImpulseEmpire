@@ -5,13 +5,15 @@ let gameState;
 function newGame() {
     gameState = {
         tutorialSeen: false,
+        lastUpdate: Date.now(),
         energy: 0,
         totalEnergy: 0,
         clickPower: 1,
         energyPerSecond: 0,
         totalClicks: 0,
         playTime: 0,
-        lastUpdate: Date.now(),
+        offlineProductionRate: 0.25, // 25% of normal production
+        maxOfflineTime: 8 * 60 * 60, // 8 hours default cap
         buildings: [
             {
                 id: 'neuron',
@@ -509,6 +511,79 @@ function newGame() {
                     const oscillator = gameState.buildings.find(b => b.id === 'neural_oscillator');
                     return oscillator && oscillator.count >= 5;
                 }
+            },
+            {
+                id: 'neural-maintenance',
+                name: 'Neural Maintenance',
+                description: 'Improves offline production to 50% of normal rate',
+                requirementText: 'Requires owning at least 25 total neurons',
+                cost: 25000,
+                purchased: false,
+                effect: function() {
+                    gameState.offlineProductionRate = 0.5; // 50% of online production
+                },
+                requirement: function() {
+                    const totalNeurons = gameState.buildings.reduce((total, building) => total + building.count, 0);
+                    return totalNeurons >= 25;
+                }
+            },
+            {
+                id: 'autonomous-processing',
+                name: 'Autonomous Processing',
+                description: 'Improves offline production to 75% of normal rate',
+                requirementText: 'Requires owning at least 50 total neurons',
+                cost: 100000,
+                purchased: false,
+                effect: function() {
+                    gameState.offlineProductionRate = 0.75; // 75% of online production
+                },
+                requirement: function() {
+                    const totalNeurons = gameState.buildings.reduce((total, building) => total + building.count, 0);
+                    return totalNeurons >= 50;
+                }
+            },
+            {
+                id: 'neural-automation',
+                name: 'Neural Automation',
+                description: 'Achieves 100% offline production efficiency',
+                requirementText: 'Requires owning at least 100 total neurons',
+                cost: 500000,
+                purchased: false,
+                effect: function() {
+                    gameState.offlineProductionRate = 1.0; // 100% of online production
+                },
+                requirement: function() {
+                    const totalNeurons = gameState.buildings.reduce((total, building) => total + building.count, 0);
+                    return totalNeurons >= 100;
+                }
+            },
+            {
+                id: 'extended-memory',
+                name: 'Extended Neural Memory',
+                description: 'Increases maximum offline collection time to 24 hours',
+                requirementText: 'Requires generating 1M total energy',
+                cost: 250000,
+                purchased: false,
+                effect: function() {
+                    gameState.maxOfflineTime = 24 * 60 * 60; // 24 hours in seconds
+                },
+                requirement: function() {
+                    return gameState.totalEnergy >= 1000000;
+                }
+            },
+            {
+                id: 'persistent-memory',
+                name: 'Persistent Neural Memory',
+                description: 'Increases maximum offline collection time to 3 days',
+                requirementText: 'Requires generating 100M total energy',
+                cost: 5000000,
+                purchased: false,
+                effect: function() {
+                    gameState.maxOfflineTime = 3 * 24 * 60 * 60; // 3 days in seconds
+                },
+                requirement: function() {
+                    return gameState.totalEnergy >= 100000000;
+                }
             }
         ]
     };
@@ -524,7 +599,12 @@ function initGame() {
     const savedGame = loadGame();
     if (!savedGame) {
         newGame();
+    } else {
+        // Calculate offline progress when loading a saved game
+        calculateOfflineProgress();
     }
+    
+    tutorialSeen();
     renderBuildings();
     renderUpgrades();
     updateDisplay();
@@ -556,6 +636,93 @@ function startGameLoop() {
         updateDisplay();
         saveGame();
     }, 100); // Update 10 times per second
+}
+
+// Function to calculate offline progress
+function calculateOfflineProgress() {
+    const now = Date.now();
+    const lastTimestamp = gameState.lastUpdate;
+    const deltaTimeSeconds = (now - lastTimestamp) / 1000;
+    
+    // Only calculate if player has been away for at least 10 seconds
+    if (deltaTimeSeconds < 10) return;
+    
+    // Cap offline progress based on maxOfflineTime
+    const cappedTime = Math.min(deltaTimeSeconds, gameState.maxOfflineTime);
+    
+    // Apply the offline production rate
+    const offlineProduction = gameState.energyPerSecond * cappedTime * gameState.offlineProductionRate;
+    
+    // Apply the offline earnings
+    gameState.energy += offlineProduction;
+    gameState.totalEnergy += offlineProduction;
+    gameState.playTime += cappedTime;
+    gameState.lastUpdate = now;
+    
+    // Show the welcome back modal
+    showOfflineProgressModal(offlineProduction, cappedTime);
+}
+
+// Function to display the offline progress modal
+function showOfflineProgressModal(production, timeAwaySeconds) {
+    // Create the modal container
+    const modalContainer = document.createElement('div');
+    modalContainer.className = 'offline-modal-container';
+    
+    // Format the time away
+    let timeAwayFormatted;
+    if (timeAwaySeconds < 60) {
+        timeAwayFormatted = `${Math.round(timeAwaySeconds)} seconds`;
+    } else if (timeAwaySeconds < 3600) {
+        timeAwayFormatted = `${Math.round(timeAwaySeconds / 60)} minutes`;
+    } else if (timeAwaySeconds < 86400) {
+        timeAwayFormatted = `${Math.round(timeAwaySeconds / 3600 * 10) / 10} hours`;
+    } else {
+        timeAwayFormatted = `${Math.round(timeAwaySeconds / 86400 * 10) / 10} days`;
+    }
+
+    // Calculate what percentage of max time was used
+    const maxTimePercent = Math.min(100, Math.round((timeAwaySeconds / gameState.maxOfflineTime) * 100));
+    
+    // Create the modal content
+    modalContainer.innerHTML = `
+        <div class="offline-modal">
+            <h2>Welcome Back!</h2>
+            <p>You were away for ${timeAwayFormatted}.</p>
+            <p>Your neurons generated <span class="energy-gained">${formatNumber(production)}</span> Impulse Energy while you were away!</p>
+            <div class="offline-stats">
+                <div class="offline-stat">
+                    <span class="stat-label">Efficiency:</span>
+                    <span class="stat-value">${Math.round(gameState.offlineProductionRate * 100)}%</span>
+                </div>
+                <div class="offline-stat">
+                    <span class="stat-label">Time Cap:</span>
+                    <span class="stat-value">${maxTimePercent}% used</span>
+                </div>
+            </div>
+            <div class="energy-icon">⚡</div>
+            <button class="collect-button">Collect</button>
+        </div>
+    `;
+    
+    // Add the modal to the document
+    document.body.appendChild(modalContainer);
+    
+    // Add event listener to the collect button
+    const collectButton = modalContainer.querySelector('.collect-button');
+    collectButton.addEventListener('click', () => {
+        // Add a closing animation
+        const modal = modalContainer.querySelector('.offline-modal');
+        modal.classList.add('closing');
+        
+        // Remove the modal after animation completes
+        setTimeout(() => {
+            modalContainer.remove();
+        }, 500);
+        
+        // Update the display
+        updateDisplay();
+    });
 }
 
 // Handle clicking the impulse button
@@ -767,6 +934,7 @@ function updateDisplay() {
 function saveGame() {
     const saveData = {
         tutorialSeen: gameState.tutorialSeen,
+        lastUpdate: gameState.lastUpdate,
         energy: gameState.energy,
         totalEnergy: gameState.totalEnergy,
         clickPower: gameState.clickPower,
@@ -774,10 +942,10 @@ function saveGame() {
         playTime: gameState.playTime,
         buildings: gameState.buildings.map(b => ({
             id: b.id,
-            count: b.count,
             cost: b.cost,
+            count: b.count,
+            baseProduction: b.baseProduction,
             production: b.production,
-            baseProduction: b.baseProduction
         })),
         upgrades: gameState.upgrades.map(u => ({
             id: u.id,
@@ -799,6 +967,7 @@ function loadGame() {
         
         
         gameState.tutorialSeen = parsedData.tutorialSeen || false;
+        gameState.lastUpdate = parsedData.lastUpdate || Date.now();
         gameState.energy = parsedData.energy || 0;
         gameState.totalEnergy = parsedData.totalEnergy || 0;
         gameState.clickPower = parsedData.clickPower || 1;
