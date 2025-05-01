@@ -210,18 +210,11 @@ function performPrestige() {
     // Restore prestige data
     gameState.prestige = currentPrestige;
     
-    // Apply persistent bonuses from prestige upgrades
-    applyPrestigeUpgrades();
+    // Save the game with this updated state before refreshing
+    saveGame();
     
     // Show modal with reset results
-    showPrestigeModal(rewards);
-    
-    // Update display
-    renderPrestige();
-    renderBuildings();
-    renderUpgrades();
-    updateDisplay();
-    saveGame();
+    showPrestigeModal(rewards, true);
 }
 
 // Apply all prestige upgrade effects to the new game
@@ -701,7 +694,7 @@ function getSpecialUnlockControls(unlock) {
 }
 
 // Show modal with reset results
-function showPrestigeModal(rewards) {
+function showPrestigeModal(rewards, shouldRefresh = false) {
     // Create the modal container
     const modalContainer = document.createElement('div');
     modalContainer.className = 'prestige-modal-container';
@@ -750,13 +743,18 @@ function showPrestigeModal(rewards) {
         const modal = modalContainer.querySelector('.prestige-modal');
         modal.classList.add('closing');
         
-        // Remove the modal after animation completes
+        // Remove the modal after animation completes and refresh if needed
         setTimeout(() => {
             modalContainer.remove();
+            
+            if (shouldRefresh) {
+                // Force a page reload after the modal closes
+                window.location.reload();
+            } else {
+                // Only update display if not refreshing
+                updateDisplay();
+            }
         }, 500);
-        
-        // Update the display
-        updateDisplay();
     });
 }
 

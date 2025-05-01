@@ -1228,7 +1228,16 @@ function loadGame() {
 function resetGame() {
     if (confirm('Are you sure you want to reset your game? ALL progress will be lost; even PRESTIGE progress!')) {
         // Clean up prestige-related intervals
-        cleanupPrestigeIntervals();
+        if (typeof cleanupPrestigeIntervals === 'function') {
+            cleanupPrestigeIntervals();
+        }
+        
+        // Clear any other intervals that might be running
+        const highestTimeoutId = setTimeout(() => {}, 0);
+        for (let i = 0; i < highestTimeoutId; i++) {
+            clearTimeout(i);
+            clearInterval(i);
+        }
         
         localStorage.removeItem('impulseEmpire');
         
