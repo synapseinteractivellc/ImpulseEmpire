@@ -1,36 +1,41 @@
-name: github-pages
+name: Deploy to GitHub Pages
 
-# GitHub Pages specific configuration
 on:
+  # Runs on pushes targeting the default branch
   push:
-    branches: [ main ]  # Deploy when pushing to main branch
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
+  # Single deploy job since we're just deploying
   deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        
-      # No build step needed for simple HTML/CSS/JS site
-      
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          folder: .  # Root directory as the source
-          branch: gh-pages  # The branch the deployment will target
-          clean: true  # Automatically remove deleted files from the deployment branch
-          
-      - name: Create .nojekyll file
-        run: touch .nojekyll
-        
-      ## Configuration for custom domain (optional)
-      #- name: Configure custom domain
-      #  run: |
-      #    echo "impulse-empire.example.com" > CNAME
-          
-# GitHub Pages Configuration Notes:
-# 1. This workflow will create a gh-pages branch with your site content
-# 2. In your GitHub repository settings, enable GitHub Pages and select the gh-pages branch
-# 3. Replace 'impulse-empire.example.com' with your actual domain if you have one
-# 4. If you don't have a custom domain, remove the 'Configure custom domain' step
+          # Upload entire repository
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
