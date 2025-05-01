@@ -1074,6 +1074,8 @@ function saveGame() {
         clickPower: gameState.clickPower,
         totalClicks: gameState.totalClicks,
         playTime: gameState.playTime,
+        offlineProductionRate:gameState.offlineProductionRate,
+        maxOfflineTime: gameState.maxOfflineTime,
         buildings: gameState.buildings.map(b => ({
             id: b.id,
             cost: b.cost,
@@ -1132,6 +1134,8 @@ function loadGame() {
         gameState.clickPower = parsedData.clickPower || 1;
         gameState.totalClicks = parsedData.totalClicks || 0;
         gameState.playTime = parsedData.playTime || 0;
+        gameState.offlineProductionRate = parsedData.offlineProductionRate || 0.25; // 25% of normal production if nothing saved
+        gameState.maxOfflineTime = parsedData.maxOfflineTime || 8 * 60 * 60; // cap at 8 hours offline if nothing saved
         
         if (parsedData.buildings) {
             parsedData.buildings.forEach(savedBuilding => {
@@ -1170,17 +1174,39 @@ function loadGame() {
             }
         }
 
-        // Load prestige data
-        if (parsedData.prestige) {
-            gameState.prestige = parsedData.prestige;
+         // Load prestige data
+         if (parsedData.prestige) {
+            // Instead of directly assigning parsed prestige data, we'll update fields individually
+            gameState.prestige.neuralPlasticityPoints = parsedData.prestige.neuralPlasticityPoints || 0;
+            gameState.prestige.totalNPPEarned = parsedData.prestige.totalNPPEarned || 0;
+            gameState.prestige.prestigeCount = parsedData.prestige.prestigeCount || 0;
+            gameState.prestige.lastResetTime = parsedData.prestige.lastResetTime || 0;
             
-            // Restore the functions for upgrades
-            gameState.prestige.upgrades.forEach(savedUpgrade => {
-                const templateUpgrade = window.templatePrestigeUpgrades.find(u => u.id === savedUpgrade.id);
-                if (templateUpgrade) {
-                    savedUpgrade.effect = templateUpgrade.effect;
-                }
-            });
+            // Update upgrade levels and costs but keep names and descriptions
+            if (parsedData.prestige.upgrades) {
+                parsedData.prestige.upgrades.forEach(savedUpgrade => {
+                    const upgrade = gameState.prestige.upgrades.find(u => u.id === savedUpgrade.id);
+                    if (upgrade) {
+                        upgrade.level = savedUpgrade.level || 0;
+                        upgrade.currentCost = savedUpgrade.currentCost || upgrade.cost;
+                        // The name and description fields are already set in the newGame() initialization
+                    }
+                });
+            }
+            
+            // Update special unlocks but keep names and descriptions
+            if (parsedData.prestige.specialUnlocks) {
+                parsedData.prestige.specialUnlocks.forEach(savedUnlock => {
+                    const unlock = gameState.prestige.specialUnlocks.find(u => u.id === savedUnlock.id);
+                    if (unlock) {
+                        unlock.purchased = savedUnlock.purchased || false;
+                        if (savedUnlock.options) {
+                            unlock.options = savedUnlock.options;
+                        }
+                        // The name and description fields are already set in the newGame() initialization
+                    }
+                });
+            }
         } else {
             // Initialize prestige system if it doesn't exist
             initPrestige();
@@ -1206,17 +1232,8 @@ function resetGame() {
         
         localStorage.removeItem('impulseEmpire');
         
-        // Reset game state to initial values
-        newGame();
-        
-        // Update display with reset values
-        calculateEnergyPerSecond();
-        renderBuildings();
-        renderUpgrades();
-        renderAchievements();
-        renderPrestige();
-        updateDisplay();
-        tutorialSeen();
+        // Force a page reload after resetting
+        window.location.reload();
     }
 }
 

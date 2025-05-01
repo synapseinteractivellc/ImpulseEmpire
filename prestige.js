@@ -1,57 +1,5 @@
 // Prestige System for Impulse Empire - Neural Rewiring
 
-// Store template versions of the upgrades with their functions intact
-window.templatePrestigeUpgrades = [
-    {
-        id: 'click-efficiency',
-        effect: function(level) {
-            return level;
-        }
-    },
-    {
-        id: 'production-boost',
-        effect: function(level) {
-            return level * 0.05;
-        }
-    },
-    {
-        id: 'cost-reduction',
-        effect: function(level) {
-            return Math.min(0.5, level * 0.02);
-        }
-    },
-    {
-        id: 'offline-boost',
-        effect: function(level) {
-            return level * 0.05;
-        }
-    },
-    {
-        id: 'starting-energy',
-        effect: function(level) {
-            return level * 100;
-        }
-    },
-    {
-        id: 'npp-boost',
-        effect: function(level) {
-            return level * 0.1;
-        }
-    },
-    {
-        id: 'auto-neuron',
-        effect: function(level) {
-            return Math.floor(level * 5);
-        }
-    },
-    {
-        id: 'retention',
-        effect: function(level) {
-            return level * 0.05;
-        }
-    }
-];
-
 // Initialize prestige system in the game state
 function initPrestige() {
     if (!gameState.prestige) {
@@ -806,6 +754,9 @@ function showPrestigeModal(rewards) {
         setTimeout(() => {
             modalContainer.remove();
         }, 500);
+        
+        // Update the display
+        updateDisplay();
     });
 }
 
