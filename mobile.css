@@ -1,0 +1,214 @@
+/* Mobile Responsive Enhancements for Impulse Empire */
+
+/* Base Mobile Viewport Adjustments */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px; /* Base font size for mobile */
+  }
+  
+  .container {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  .game-title {
+    font-size: 2rem;
+  }
+  
+  .header-buttons {
+    position: static;
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  /* Improve clicker area for touch */
+  .clicker-area {
+    margin: 15px 0;
+  }
+  
+  #impulse-button {
+    width: 120px;  /* Slightly smaller but still tappable */
+    height: 120px;
+    font-size: 1rem;
+  }
+  
+  /* Make tabs scrollable on small screens */
+  .tab-container {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    margin-bottom: 15px;
+    padding-bottom: 5px; /* Space for the scrollbar */
+  }
+  
+  .tab {
+    flex: 0 0 auto;
+    padding: 8px 12px;
+  }
+  
+  /* Building Cards (full width on mobile) */
+  .building {
+    padding: 12px;
+  }
+  
+  .building-name {
+    font-size: 1rem;
+  }
+  
+  .building-count {
+    font-size: 1.2rem;
+  }
+  
+  /* Fix tooltip positioning for touch devices */
+  .building-tooltip, .upgrade-tooltip {
+    position: fixed;
+    top: auto;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+    z-index: 2000;
+    width: 90%;
+    max-width: 300px;
+  }
+  
+  /* Adjustments for upgrades */
+  .upgrade-group {
+    gap: 10px;
+  }
+  
+  .upgrade {
+    width: 100%; /* Full width on mobile */
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+  
+  .upgrade-name {
+    font-size: 1rem;
+  }
+  
+  /* Make achievement cards more compact */
+  .achievement {
+    padding: 12px;
+  }
+  
+  .achievement-icon {
+    width: 35px;
+    height: 35px;
+    font-size: 1.5rem;
+  }
+  
+  .achievement-name {
+    font-size: 1rem;
+  }
+  
+  /* Prestige layout fixes */
+  .prestige-stats {
+    flex-direction: column;
+    padding: 15px;
+    gap: 15px;
+  }
+  
+  .npp-counter {
+    width: 100%;
+  }
+  
+  .prestige-upgrade, .special-unlock {
+    width: 100%;
+  }
+  
+  /* Notifications and modals */
+  .achievement-notification,
+  .offline-modal,
+  .prestige-modal {
+    width: 90%;
+    max-width: 350px;
+  }
+  
+  .prestige-modal-container,
+  .offline-modal-container {
+    padding: 10px;
+  }
+  
+  /* Floating text adjustments */
+  .floating-text {
+    font-size: 1rem;
+  }
+  
+  /* Brain wave boost notification */
+  .brain-wave-boost {
+    width: auto;
+    max-width: 90%;
+  }
+  
+  /* Enhance clickability of buttons */
+  .button, 
+  .collect-button, 
+  .continue-button,
+  .prestige-button,
+  .upgrade-button,
+  .unlock-button {
+    padding: 12px 15px;
+    min-height: 44px; /* Minimum recommended touch target size */
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 375px) {
+  .game-title {
+    font-size: 1.8rem;
+  }
+  
+  #impulse-button {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .tab {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Fix double-tap issue on iOS */
+* {
+  touch-action: manipulation;
+}
+
+/* Fix momentum scrolling on iOS */
+.tab-content {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Improve large modals on mobile */
+@media (max-width: 768px) {
+  .prestige-modal, .offline-modal {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+
+/* Fix input element sizing */
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+
+/* Fix overflow issues in building cards */
+@media (max-width: 768px) {
+  .building-info {
+    width: 70%;
+  }
+  
+  .building-current-production-description {
+    margin-left: 0;
+    text-align: left;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

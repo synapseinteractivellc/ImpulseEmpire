@@ -2,22 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Impulse Empire</title>
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png">
     <link rel="stylesheet" href="./main.css">
     <link rel="stylesheet" href="./buildings.css">
     <link rel="stylesheet" href="./upgrades.css">
     <link rel="stylesheet" href="./achievements.css">
     <link rel="stylesheet" href="./prestige.css">
+    <link rel="stylesheet" href="./mobile.css">
 </head>
 <body>
     <div class="container">
         <header>
             <h1 class="game-title">Impulse Empire</h1>
             <p>Build your neural network and expand your empire!</p>
-            <p>Work in progress. Things will often be broken. Updated: 5/2 1:23am</p>
-            <p>I'd recommend doing a reset.</p>
             <div class="header-buttons">
                 <button class="button" onclick="saveGame()">Save Game</button>
                 <button class="button" onclick="resetGame()">Reset Game</button>
@@ -36,11 +40,11 @@
         </div>
 
         <div class="tab-container">
-            <div class="tab active" onclick="openTab('buildings')">Neurons</div>
-            <div class="tab" onclick="openTab('upgrades')">Upgrades</div>
-            <div class="tab" onclick="openTab('achievements')">Achievements</div>
-            <div class="tab" onclick="openTab('prestige')">Ascension</div>
-            <div class="tab" onclick="openTab('stats')">Stats</div>
+            <div class="tab active" data-tab="buildings">Neurons</div>
+            <div class="tab" data-tab="upgrades">Upgrades</div>
+            <div class="tab" data-tab="achievements">Achievements</div>
+            <div class="tab" data-tab="prestige">Ascension</div>
+            <div class="tab" data-tab="stats">Stats</div>
         </div>
 
         <div class="clicker-area">
@@ -91,14 +95,26 @@
 
         <footer>
             <p><a href="https://github.com/synapseinteractivellc/ImpulseEmpire">Impulse Empire</a> &copy; 2025 Synapse Interactive LLC</p>
-            
         </footer>
     </div>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed: ', err));
+            });
+        }
+    </script>
+    
     <!-- Load JS files in the correct order -->
     <script src="./buildings.js"></script>
     <script src="./upgrades.js"></script>
     <script src="./achievements.js"></script>
     <script src="./prestige.js"></script>
+    <script src="./mobile.js"></script>
     <script src="./game.js"></script>
 </body>
 </html>
