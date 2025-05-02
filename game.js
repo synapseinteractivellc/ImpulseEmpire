@@ -286,14 +286,14 @@ function saveGame() {
             id: b.id,
             cost: b.cost,
             count: b.count,
-            baseProduction: b.baseProduction,
+            baseProduction: b.baseProduction, // Save the modified baseProduction
             production: b.production,
-            visible: b.visible // Save visibility status
+            visible: b.visible
         })),
         upgrades: gameState.upgrades.map(u => ({
             id: u.id,
             purchased: u.purchased,
-            visible: u.visible // Save visibility status
+            visible: u.visible
         })),
         achievements: gameState.achievements ? {
             totalAchieved: gameState.achievements.totalAchieved,
@@ -339,8 +339,8 @@ function loadGame() {
         gameState.clickPower = parsedData.clickPower || 1;
         gameState.totalClicks = parsedData.totalClicks || 0;
         gameState.playTime = parsedData.playTime || 0;
-        gameState.offlineProductionRate = parsedData.offlineProductionRate || 0.25; // 25% of normal production if nothing saved
-        gameState.maxOfflineTime = parsedData.maxOfflineTime || 8 * 60 * 60; // cap at 8 hours offline if nothing saved
+        gameState.offlineProductionRate = parsedData.offlineProductionRate || 0.25;
+        gameState.maxOfflineTime = parsedData.maxOfflineTime || 8 * 60 * 60;
         
         if (parsedData.buildings) {
             parsedData.buildings.forEach(savedBuilding => {
@@ -348,8 +348,13 @@ function loadGame() {
                 if (building) {
                     building.count = savedBuilding.count || 0;
                     building.cost = savedBuilding.cost || building.baseCost;
+                    // Load the saved baseProduction value which includes all upgrade effects
+                    if (savedBuilding.baseProduction !== undefined) {
+                        building.baseProduction = savedBuilding.baseProduction;
+                    }
+                    // Load the saved production value
                     building.production = savedBuilding.production || 0;
-                    building.visible = savedBuilding.visible || false; // Load visibility status
+                    building.visible = savedBuilding.visible || false;
                 }
             });
         }
@@ -359,7 +364,9 @@ function loadGame() {
                 const upgrade = gameState.upgrades.find(u => u.id === savedUpgrade.id);
                 if (upgrade) {
                     upgrade.purchased = savedUpgrade.purchased || false;      
-                    upgrade.visible = savedUpgrade.visible || false; // Load visibility status              
+                    upgrade.visible = savedUpgrade.visible || false;
+                    // We don't reapply upgrade effects here - the effects should already be reflected
+                    // in the saved state of the game (clickPower, building production, etc.)
                 }
             });
         }
@@ -379,27 +386,23 @@ function loadGame() {
             }
         }
 
-         // Load prestige data
-         if (parsedData.prestige) {
-            // Instead of directly assigning parsed prestige data, we'll update fields individually
+        // Load prestige data
+        if (parsedData.prestige) {
             gameState.prestige.neuralPlasticityPoints = parsedData.prestige.neuralPlasticityPoints || 0;
             gameState.prestige.totalNPPEarned = parsedData.prestige.totalNPPEarned || 0;
             gameState.prestige.prestigeCount = parsedData.prestige.prestigeCount || 0;
             gameState.prestige.lastResetTime = parsedData.prestige.lastResetTime || 0;
             
-            // Update upgrade levels and costs but keep names and descriptions
             if (parsedData.prestige.upgrades) {
                 parsedData.prestige.upgrades.forEach(savedUpgrade => {
                     const upgrade = gameState.prestige.upgrades.find(u => u.id === savedUpgrade.id);
                     if (upgrade) {
                         upgrade.level = savedUpgrade.level || 0;
                         upgrade.currentCost = savedUpgrade.currentCost || upgrade.cost;
-                        // The name and description fields are already set in the newGame() initialization
                     }
                 });
             }
             
-            // Update special unlocks but keep names and descriptions
             if (parsedData.prestige.specialUnlocks) {
                 parsedData.prestige.specialUnlocks.forEach(savedUnlock => {
                     const unlock = gameState.prestige.specialUnlocks.find(u => u.id === savedUnlock.id);
@@ -408,12 +411,10 @@ function loadGame() {
                         if (savedUnlock.options) {
                             unlock.options = savedUnlock.options;
                         }
-                        // The name and description fields are already set in the newGame() initialization
                     }
                 });
             }
         } else {
-            // Initialize prestige system if it doesn't exist
             initPrestige();
         }
         
@@ -422,6 +423,8 @@ function loadGame() {
             applyPrestigeUpgrades();
         }
         
+        // Make sure to recalculate production values
+        calculateBuildingEffects();
         calculateEnergyPerSecond();
         tutorialSeen();
         return true;
