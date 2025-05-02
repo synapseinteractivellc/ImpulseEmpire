@@ -18,14 +18,10 @@ function newGame() {
         offlineProductionRate: 0.25, // 25% of normal production
         maxOfflineTime: 8 * 60 * 60, // 8 hours default cap
         buildings: initBuildings(),
-        upgrades: initUpgrades()
+        upgrades: initUpgrades(),
+        achievements: initAchievements(),
+        prestige: initPrestige()
     };
-
-    // Initialize the achievements system
-    initAchievements();
-
-    // Initialize the prestige system
-    initPrestige();
     
     // Make sure to calculate energy per second
     calculateEnergyPerSecond();
