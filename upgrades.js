@@ -801,17 +801,8 @@ const upgradeDefinitions = [
         requirementText: 'Requires owning at least 5 Neural Oscillators',
         cost: 2000000,
         effect: function() {
-            // Modify the purchaseBuilding function to add this effect
-            const originalPurchaseBuilding = window.purchaseBuilding;
-            window.purchaseBuilding = function(buildingId) {
-                originalPurchaseBuilding(buildingId);
-                
-                const upgrade = gameState.upgrades.find(u => u.id === 'brain-wave-synchronization');
-                if (upgrade && upgrade.purchased) {
-                    // Add a 30% boost for 30 seconds
-                    activateBrainWaveBoost();
-                }
-            };
+            // The effect implementation has been modified to use a flag in the buildings.js file
+            // No need to modify the purchaseBuilding function here anymore
         },
         requirement: function() {
             const oscillator = gameState.buildings.find(b => b.id === 'neural_oscillator');

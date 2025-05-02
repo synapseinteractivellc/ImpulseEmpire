@@ -138,6 +138,9 @@ function calculateBuildingEffects() {
     calculateEnergyPerSecond();
 }
 
+// Global flag to track if Brain Wave Boost is active
+window.brainWaveBoostActive = false;
+
 // Purchase a building
 function purchaseBuilding(buildingId) {
     const building = gameState.buildings.find(b => b.id === buildingId);
@@ -162,7 +165,7 @@ function purchaseBuilding(buildingId) {
         
         // Check for Brain Wave Synchronization upgrade
         const brainWaveUpgrade = gameState.upgrades.find(u => u.id === 'brain-wave-synchronization');
-        if (brainWaveUpgrade && brainWaveUpgrade.purchased) {
+        if (brainWaveUpgrade && brainWaveUpgrade.purchased && !window.brainWaveBoostActive) {
             activateBrainWaveBoost();
         }
     }
@@ -207,6 +210,14 @@ function renderBuildings() {
 
 // Function to activate brain wave boost (30% production for 30 seconds)
 function activateBrainWaveBoost() {
+    // If the boost is already active, don't apply it again
+    if (window.brainWaveBoostActive) {
+        return;
+    }
+    
+    // Set the flag to true to indicate boost is active
+    window.brainWaveBoostActive = true;
+    
     // Store original production values
     const originalProductions = gameState.buildings.map(b => ({
         id: b.id,
@@ -261,6 +272,9 @@ function activateBrainWaveBoost() {
     
     // Remove the boost after 30 seconds
     setTimeout(() => {
+        // Set the flag back to false
+        window.brainWaveBoostActive = false;
+        
         // Restore original production values
         gameState.buildings.forEach(building => {
             const original = originalProductions.find(o => o.id === building.id);
