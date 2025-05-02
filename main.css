@@ -1,4 +1,4 @@
-/* Basic styling */
+/* Main styling for Impulse Empire */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #0a0a1a;
@@ -109,147 +109,7 @@ header {
     box-shadow: 0 0 25px rgba(138, 43, 226, 1);
 }
 
-.buildings-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.building {
-    background-color: #1a1a2e;
-    padding: 15px;
-    border-radius: 10px;
-    display: flex;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    position: relative;
-}
-
-.building:hover {
-    background-color: #252547;
-}
-
-.building-info {
-    flex: 1;
-}
-
-.building-name {
-    font-size: 1.2rem;
-    color: #00ffff;
-}
-
-.building-cost {
-    font-size: 0.9rem;
-    color: #ff7f50;
-}
-
-.building-current-production-description {    
-    margin-left: 25%;
-    text-align: right;
-    font-size: 0.9rem;
-    color: #2dda2d;
-}
-
-.building-count {
-    font-size: 1.5rem;
-    color: white;
-    margin-left: 15px;
-}
-
-
-.building-tooltip {
-    position: absolute;
-    top: -40px; /* Position above the building element */
-    left: 70%;
-    transform: translateX(-50%);
-    background-color: #4b0082; /* Purple background */
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    width: max-content;
-    max-width: 300px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    pointer-events: none;
-    z-index: 1000;
-    box-shadow: 0 0 10px rgba(138, 43, 226, 0.7);
-    text-align: center;
-}
-
-.building:hover .building-tooltip {
-    opacity: 1;
-    visibility: visible;
-}
-
-.building-description-tooltip {
-    display: block;
-    margin-bottom: 5px;
-    color: #00ffff; /* Cyan color for the main description */
-}
-
-.building-base-production-description-tooltip {
-    display: block;
-    color: #2dda2d; /* Green color for the production description */
-}
-
-.upgrades-container {
-    margin-top: 20px;
-}
-
-.upgrade {
-    background-color: #1a1a2e;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    position: relative; /* Added to properly position the tooltip */
-}
-
-.upgrade:hover {
-    background-color: #252547;
-}
-
-.upgrade-tooltip {
-    position: absolute;
-    top: -40px;
-    left: 70%;
-    transform: translateX(-50%);
-    background-color: #4b0082;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    width: max-content;
-    max-width: 300px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    pointer-events: none;
-    z-index: 1000;
-    box-shadow: 0 0 10px rgba(138, 43, 226, 0.7);
-    text-align: center;
-}
-
-.upgrade:hover .upgrade-tooltip {
-    opacity: 1;
-    visibility: visible;
-}
-
-.upgrade-requirement {
-    display: block;
-    margin-top: 5px;
-    color: #ff7f50; /* Orange color for requirements */
-}
-
-.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
+/* Tab Navigation */
 .tab-container {
     display: flex;
     justify-content: center;
@@ -277,6 +137,7 @@ header {
     display: block;
 }
 
+/* Click Effects */
 .floating-text {
     position: absolute;
     animation: float-up 2s forwards;
@@ -296,6 +157,7 @@ header {
     }
 }
 
+/* Boost and Notification Effects */
 .brain-wave-boost {
     position: fixed;
     bottom: 20px;
@@ -315,7 +177,6 @@ header {
     margin-top: 5px;
 }
 
-/* Energy Burst Notification */
 .energy-burst-notification {
     position: absolute;
     top: 50px;
@@ -335,11 +196,7 @@ header {
     100% { width: 0%; }
 }
 
-
-/*******************************/
-/* Tutorial and Footer Styling */
-/*******************************/
-
+/* Tutorial and Footer */
 .tutorial {
     background-color: rgba(0, 0, 0, 0.8);
     padding: 15px;
@@ -360,9 +217,7 @@ footer a {
     color: #666;
 }
 
-/*************************/
-/* Offline Modal Styling */
-/*************************/
+/* Offline Modal */
 .offline-modal-container {
     position: fixed;
     top: 0;
@@ -468,6 +323,7 @@ footer a {
     animation: scaleOut 0.5s ease-in-out forwards;
 }
 
+/* Common Animations */
 @keyframes fadeIn {
     0% { opacity: 0; }
     100% { opacity: 1; }

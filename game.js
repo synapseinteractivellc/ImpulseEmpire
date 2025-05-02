@@ -181,10 +181,11 @@ function showOfflineProgressModal(production, timeAwaySeconds) {
 function clickImpulse() {
     let energyPerClick = gameState.clickPower;
 
-    // Check for synchronized firing upgrade
-    const syncFiringUpgrade = gameState.upgrades.find(u => u.id === 'synchronized-firing');
-    if (syncFiringUpgrade && syncFiringUpgrade.purchased) {
-        energyPerClick += (gameState.energyPerSecond * 0.1);
+    // Check for click synergy upgrades 
+    // This uses the new getClickSynergyBonus function from upgrades.js
+    const synergyBonus = window.getClickSynergyBonus ? window.getClickSynergyBonus() : 0;
+    if (synergyBonus > 0) {
+        energyPerClick += synergyBonus;
     }
 
     energyPerClick = Math.floor(energyPerClick);

@@ -1,0 +1,162 @@
+/* Upgrades styling for Impulse Empire */
+
+.upgrades-container {
+    margin-top: 20px;
+}
+
+/* Upgrade Groups */
+.upgrade-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+/* Individual Upgrade */
+.upgrade {
+    background-color: #1a1a2e;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    position: relative; /* For tooltip positioning */
+    width: calc(50% - 15px); /* Two per row with gap */
+    box-sizing: border-box;
+}
+
+.upgrade:hover {
+    background-color: #252547;
+    transform: translateY(-2px);
+}
+
+.upgrade.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Upgrade Header */
+.upgrade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.upgrade-name {
+    font-size: 1.1rem;
+    color: #00ffff;
+    font-weight: bold;
+}
+
+.upgrade-tier {
+    background-color: #4b0082;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    color: white;
+}
+
+/* Upgrade Content */
+.upgrade-description {
+    font-size: 0.9rem;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.upgrade-cost {
+    font-size: 0.9rem;
+    color: #ff7f50;
+    margin-bottom: 5px;
+}
+
+/* Upgrade Tooltip */
+.upgrade-tooltip {
+    position: absolute;
+    top: -40px;
+    left: 70%;
+    transform: translateX(-50%);
+    background-color: #4b0082;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    width: max-content;
+    max-width: 300px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.7);
+    text-align: center;
+}
+
+.upgrade:hover .upgrade-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.upgrade-requirement {
+    display: block;
+    margin-top: 5px;
+    color: #ff7f50; /* Orange color for requirements */
+}
+
+/* Tier Styling */
+.upgrade.tier-1 {
+    border-left: 3px solid #4fc3f7; /* Light blue */
+}
+
+.upgrade.tier-2 {
+    border-left: 3px solid #7e57c2; /* Purple */
+}
+
+.upgrade.tier-3 {
+    border-left: 3px solid #f06292; /* Pink */
+}
+
+/* Building-specific upgrades */
+.upgrade.building-neuron {
+    background-color: rgba(30, 136, 229, 0.2);
+}
+
+.upgrade.building-dendrite {
+    background-color: rgba(67, 160, 71, 0.2);
+}
+
+.upgrade.building-axon_terminal {
+    background-color: rgba(216, 67, 21, 0.2);
+}
+
+.upgrade.building-myelin_sheath {
+    background-color: rgba(156, 39, 176, 0.2);
+}
+
+.upgrade.building-synapse_junction {
+    background-color: rgba(255, 193, 7, 0.2);
+}
+
+.upgrade.building-glial_cell_network {
+    background-color: rgba(0, 150, 136, 0.2);
+}
+
+.upgrade.building-neural_oscillator {
+    background-color: rgba(233, 30, 99, 0.2);
+}
+
+.upgrade.building-cortical_column {
+    background-color: rgba(63, 81, 181, 0.2);
+}
+
+.upgrade.building-thalamic_relay {
+    background-color: rgba(121, 85, 72, 0.2);
+}
+
+/* Responsive layout */
+@media (max-width: 600px) {
+    .upgrade {
+        width: 100%; /* Full width on small screens */
+    }
+}
