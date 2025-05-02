@@ -906,15 +906,39 @@ function checkSpeedyNeuronAchievement() {
     }
 }
 
-// Modify the clickImpulse function to track clicks for Speedy Neuron achievement
-// Add this call to the beginning of the clickImpulse function
-function clickImpulse() {
-    // Track this click for the Speedy Neuron achievement
-    trackClickForSpeedyNeuron();
+// Function to show achievement notification
+function showAchievementNotification(achievement) {
+    // Create the notification element
+    const notification = document.createElement('div');
+    notification.className = 'achievement-notification';
     
-    // Rest of the clickImpulse function remains the same...
-    let energyPerClick = gameState.clickPower;
-    // ...
+    // Create notification content
+    notification.innerHTML = `
+        <div class="achievement-icon">${achievement.icon}</div>
+        <div class="achievement-info">
+            <div class="achievement-name">${achievement.name}</div>
+            <div class="achievement-description">${achievement.description}</div>
+            <div class="achievement-reward">${achievement.rewardDescription}</div>
+        </div>
+    `;
+    
+    // Add notification to the document
+    document.body.appendChild(notification);
+    
+    // Play a sound effect if available
+    if (window.achievementSound) {
+        window.achievementSound.play();
+    }
+    
+    // Remove the notification after 5 seconds
+    setTimeout(() => {
+        notification.classList.add('achievement-fadeout');
+        
+        // Remove element from DOM after animation completes
+        setTimeout(() => {
+            notification.remove();
+        }, 500); // Match the CSS animation duration
+    }, 5000);
 }
 
 // Add a function to create category headers in the achievement display
@@ -1061,3 +1085,7 @@ window.checkSpeedyNeuronAchievement = checkSpeedyNeuronAchievement;
 
 // Add helper functions
 window.getBuildingIdFromAchievement = getBuildingIdFromAchievement;
+
+
+// Add this to the window object
+window.showAchievementNotification = showAchievementNotification;

@@ -18,10 +18,12 @@ function newGame() {
         offlineProductionRate: 0.25, // 25% of normal production
         maxOfflineTime: 8 * 60 * 60, // 8 hours default cap
         buildings: initBuildings(),
-        upgrades: initUpgrades(),
-        achievements: initAchievements(),
-        prestige: initPrestige()
+        upgrades: initUpgrades()
     };
+
+    // Initialize Achievements and Prestige
+    initAchievements();
+    initPrestige();
     
     // Make sure to calculate energy per second
     calculateEnergyPerSecond();
@@ -175,6 +177,8 @@ function showOfflineProgressModal(production, timeAwaySeconds) {
 
 // Handle clicking the impulse button
 function clickImpulse() {
+    trackClickForSpeedyNeuron();
+
     let energyPerClick = gameState.clickPower;
 
     // Check for click synergy upgrades 
